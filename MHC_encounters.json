@@ -1,0 +1,410 @@
+"Badlands": [
+    {
+        omen:"Remains of animal dropped from on high. At night: flapping wings.",
+        event:"Flock of 2d6 nightgaunts subdue victims by grappling and tickling, carry them off to a random hex (1d8.1d10).",
+    },
+    {
+        omen:"Long scratches on rocks. At night: Leathery rustle, lantern-eye glow.",
+        event:"A lone nightgaunt sits on a perch, interrogating the unwary. “Tell me a stooorrry,” it hisses, “and I’ll give you a preeesent.”",
+    },
+    {
+        omen:"Ringing bells, distant sobbing, groaning. Occasional shouting.",
+        event:"3d6 tax collectors riding camels, with 1d10 unfortunate debtors in chains. Proof of payment or money lets you pass.",
+    },
+    {
+        omen:"Synthetic-sounding pipe music, laughter, musky smell, shimmering.",
+        event:"A flying canvas citytent, populated by faerie people. A mobile bazaar, hotel, festival, and orgy. Reality is different inside.",
+    },
+    {
+        omen:"Barking laughter, panting, smell of wet fur and urine.",
+        event:"A hyena-ox, an escaped beast of burden. Visibly starving. Still muzzled. Pack contains a folded tent and a hammer.",
+    },
+    {
+        omen:"Patch of drying mud, stench of rotting meat.",
+        event:"A rust worm, born of a giant’s innards. Liquidizes mud to drag down prey. Smells awful, sounds worse.",
+    },
+    {
+        omen:"Plume of black smoke, earthquake rumble, crushed scenery.",
+        event:"A titan excavator, rumbling on triple treads, snapping at the smell of marrow and warm flesh. Hissing hydraulics, gantries.",
+    },
+    {
+        omen:"Flakes of rust, oil drips, bursts of garbled words and static.",
+        event:"1d4+1 rusting mechanical hounds on patrol. Attempt to inject targets with tranquilizer darts, drag to destroyed prison-lair.",
+    },
+    {
+        omen:"Trickle of water, small hardy shrubs, white slicks of dried salt.",
+        event:"A small spring protected by 1d6 transparent oozes. Paralytic touch, almost invisible.",
+    },
+    {
+        omen:"Translucent, iridescent, exoskeleton moults.",
+        event:"A giant psychedelic scorpion. Shoots pods from tail which disperse hallucinogenic spray, then attacks disoriented prey.",
+    },
+    {
+        omen:"Echoing shots, bright flashes, incoherent sobbing, weird ideas.",
+        event:"Lone wurm cultist entrenched on a mesa top. Desperate and on drugs, fires his memetic musket at anything that moves.",
+    },
+    {
+        omen:"Screech of rusted metal, sticky protein sinew webs.",
+        event:"A 13-legged titan rust spider, looking for protein dross to fuel its spinnerets and unusual objects for artistic projects.",
+    },
+    {
+        omen:"Shed skin, sinuous tracks. Burst of rattling.",
+        event:"A harmless gravel snake, imitating a more dangerous serpent. Grey-brown, feisty, delicious with salt.",
+    },
+    {
+        omen:"Whispers, intrusive thoughts. Smell of ointment and blood.",
+        event:"A Protean scout, head quivering with extra eyes and sensory jelly. Beams telepathic impressions back to command post.",
+    },
+    {
+        omen:"Harsh chemical smell, gurgling, drips of oil and fire.",
+        event:"2d6 globular firebelchers, like jelly-legged potion flasks full of kerosene. Adorable until they get hungry.",
+    },
+    {
+        omen:"Boreholes and pits, hoofprints, ragged tent and washing line.",
+        event:"A sand prospector and their donkey, searching for the perfect grade of filtration medium. That’s not it. That’s not it either.",
+    },
+    {
+        omen:"Whooping calls, triangular prints, flakes of pale skin.",
+        event:"2d6 vulture-hounds. Hairless, eyeless, beak, soft padded feet. They follow at a distance, looking for weakness or carrion.",
+    },
+    {
+        omen:"Regular crunching, small piles of washed pebbles, clawed footprints.",
+        event:"A boulder tortoise. steel-trap jaws ready to bite and maim. Makes a delicious but lethargy-inducing soup.",
+    },
+    {
+        omen:"Delicious smell of meat and spices, drops of gravy, trail of faint smoke.",
+        event:"Dubious cannibal commissary cart. Wrapped in bandages. Sells pies, sausages, delicacies. Not subtle. Buys bodies.",
+    },
+    {
+        omen:"Slimy hoofprints, distant warbling calls, acidic smell.",
+        event:"3d6 deer-snails. Mottled brown and white legs, pink shells, antlers with eyes on the end. Skittish, excellent climbers.",
+    },
+],
+"Barren Fells": [
+    {
+        omen:"Bubbles, noxious fumes. Burping, wheezing, sighing. Soft splashes.",
+        event:"1d6 mire zombies, maybe melted together. Grasping claws, black skin stretched over bursting organs. Drag victims down.",
+    },
+    {
+        omen:"Hissing. Rising bands of steam. Smell of scalded earth. Heat.",
+        event:"A sublimator, glittering specks of light in roughly human shape. Flies. Solids it touches rapidly transition to gas. Hungry.",
+    },
+    {
+        omen:"Scrap of paper with an arrow drawn on it, held down by a stone.",
+        event:"2d4 paper golems, like silent origami humans. Limb-knives cut like steel. Gentle, but deadly when panicked. They fear fire.",
+    },
+    {
+        omen:"Hanging bulbous rocks, crisp salt- rimmed footprints.",
+        event:"A mineral dryad, inhumanly beautiful. Sustained by rare metals and esoteric alchemy. Trades geode-fruit and advice.",
+    },
+    {
+        omen:"Sled-like tracks, drifts of fresh snow, excavated animal corpse.",
+        event:"A parasitic alpine scorpion. Bear-sized, weather-bringing. Toxic causes paralysis and frostbite.",
+    },
+    {
+        omen:"Broken glass, acrid smells, strange clangs, beeps, curses.",
+        event:"1d6 Rsearchers, plus a servitor golem, carrying an aetheric telescope. Versed in astronomy, awful at terrestrial navigation.",
+    },
+    {
+        omen:"Fleeting memories, shivers of terror, creaking wood, warbling tones.",
+        event:"2d4 giant nightmare spiders, wearing the faces of old enemies or dead friends. Venemous, phase-shifted.",
+    },
+    {
+        omen:"Clang of metal, feverish whirring, curses, fountains of sparks.",
+        event:"1d4 geodesian wardens trying to repair their crash-landed flyer. What’s in the hold: tribute, weapons, prisoners, secrets?",
+    },
+    {
+        omen:"Flickers in the upper atmosphere, alteration of weather spells.",
+        event:"Meteorite storm. Causes spell mutations. Will cause physical mutations if exposed to the storm for too long.",
+    },
+    {
+        omen:"Clatter of wheels, soft click of limbs, flickering lantern-light.",
+        event:"A necromancer’s ambulatory carriage pulled/carried by 4 giant spiders. Sells potions, body parts, dubious advice.",
+    },
+    {
+        omen:"Icy chill, sparkles in the air, crunch of snow.",
+        event:"2d4 failed Pallid Knight aspirants, their agonized armoured bodies packed with asbestos crystals.",
+    },
+    {
+        omen:"Rising clicking, dancing stones, ridges of sand.",
+        event:"Shoal of harmless but inedible sand prawns, chittering and nipping. Bare flesh might be lacerated. Sleeping is impossible.",
+    },
+    {
+        omen:"Red vines, dangling skull-charms, sound of bending wood.",
+        event:"A creaking imp, bones and spikes overgrown with red lichen. Trades ingots of silver for souls, fresh or bottled.",
+    },
+    {
+        omen:"A single huge feather, sun- devouring shadow, harsh cry.",
+        event:"A roc, resplendent and gleaming, posing on a peak before taking to the air.",
+    },
+    {
+        omen:"Whooshing, fleeting shadows, sense of foreboding.",
+        event:"2d6 winged lions, white and grey against the sky, diving fast. They aim for necks and pack-beasts.",
+    },
+    {
+        omen:"Trail of salt, tall white banners, shrieking trumpets.",
+        event:"3d6 saltform traders, with 2d6 blind slaves and 1d4 large packbeasts. Trade high purity salt and healing for rumours.",
+    },
+    {
+        omen:"Grey mist, dimming light, drips of water falling upwards.",
+        event:"A wandering ghost. Insists it is not dead, cannot remember any details of life or goals. Frustrated by foggy amnesia.",
+    },
+    {
+        omen:"Cackling, rock-pillar totems, piles of gnawed bones, deep winding caves.",
+        event:"4d10 starving rock goblins. Camouflaged, cunning, one quarter teeth by weight. Burned by water.",
+    },
+    {
+        omen:"Zap and roil of lightning, blue-white glow,",
+        event:"2d6 lightning trees, migrating to a new peak. Black and white stripes, coronal discharge, platinum-tipped branches.",
+    },
+    {
+        omen:"Rising air pressure, growing light, flicker of raw magic.",
+        event:"A low-altitude comet, streaking and weaving. Size of a carriage, made of snow and grit, shedding dust and eerie light.",
+    },
+],
+"Bluffs": [
+    {
+        omen:"Faint cart tracks near large bluff. Grating rock sound.",
+        event:"1d6 secretive Researchers with supply caravan. Strange equipment and liquids going in, biological samples going out.",
+    },
+    {
+        omen:"Dragonfly-hum, flicker of stained glass wings. Questing green laser.",
+        event:"Defective optical drone, wants to examine eyes for impurities, replace with leaking oil-soaked orbs if necessary.",
+    },
+    {
+        omen:"Low buzzing noise, drifts or red- orange dust. Smell of lightning.",
+        event:"1d12 rust nodules the size of a child’s fist, rolling along the ground. Infectious touch, makes the skin grow rust barnacles.",
+    },
+    {
+        omen:"Doubled corners, twisting perspective, blurred colours.",
+        event:"A dimension-displaced wurzle-lion, dragged through a malfunctioning gate . Half bird, half seal, half mad.",
+    },
+    {
+        omen:"Raspy rumbling, drops of blood, shallow furrows.",
+        event:"An injured sand mole. Blind, snuffling. Will pretend to be tame until the hook in its side is removed.",
+    },
+    {
+        omen:"Dried pond, crispy insect skins. Faint buzzing, swift shadows.",
+        event:"1d4 large dragonflies hover, turn, and strike. Can spay burning acid from tails, causing blindness and agony.",
+    },
+    {
+        omen:"Reverse waterfall, pressure headaches, nausea.",
+        event:"2d6 divergent Rust Monks, preparing a disruption mandala in a side canyon.",
+    },
+    {
+        omen:"Discarded crystals, burnt smell, drill whirring, grating martial hymn.",
+        event:"Glitchy spider-like mining robot believes itself to be a mounted Protean Knight. Looking for a commander to report to.",
+    },
+    {
+        omen:"The sound of glass clinking, a smell of ozone. Hair stands on end.",
+        event:"2d12+1 fulgurites, tiny clouds of glass shards animated by lightning. Will attack any player using an electric device first.",
+    },
+    {
+        omen:"Desiccated bodies impaled on dead tree branches. Some are gnawed.",
+        event:"A shrike-roc nests nearby. Strikes isolated targets by surprise, impales them for later. Nest contains rare spices.",
+    },
+    {
+        omen:"Crude poles topped with skulls. Half-eaten, animal carcasses.",
+        event:"2d6 yetisyn bandits, crass and lustful apemen cast out from the higher peaks, armed with crude clubs and cruel teeth.",
+    },
+    {
+        omen:"Lumps of burning stone, purple scorch marks, cracked stone.",
+        event:"A phosphorus dragon roams, searching for rare metals and unusual chemicals. Beware its deadly breath.",
+    },
+    {
+        omen:"Freshly broken camp, offerings to nebulous gods.",
+        event:"2d6 members of theKalawi tribe. To see what they are hunting or tracking roll another 1d20 on this list.",
+    },
+    {
+        omen:"High-pitched tone, warm breeze, smell of chalk and hot oil.",
+        event:"A 50’ cube of shimmerfish, riding a heat haze. Bursts eyes, plugs nostrils, clogs lungs, worms into ears.",
+    },
+    {
+        omen:"Flash of azure and gold, high piping cry, shed hair-like feathers.",
+        event:"A dire peacock. Hypnotic feathers induce paralysis, then madness. Very valuable if captured or carefully killed.",
+    },
+    {
+        omen:"Bifurcated boulders, winding cracks, tin-sheet warbling.",
+        event:"A young razorwurm, thin as paper but as hard as steel. Cuts ankles, slices through armour, challenges swords.",
+    },
+    {
+        omen:"Infrasonic booms, odd winds, olive scales, claw scratches.",
+        event:"3d6 howler lizards, throat-sacs full of pressurized air. Deafening at 50’, potentially deadly at 10’.",
+    },
+    {
+        omen:"Tinny chattering, scraps of brown cloth, wisps of white smoke.",
+        event:"A False Rust Monk, constructed from minute gearwheels and heretical doctrine-wafers. Can solve mathematical problems.",
+    },
+    {
+        omen:"Distant thunder, acrid smoke, posthole clawprints.",
+        event:"A biomechanical war crab, festooned with smoking barrels and chitin lances. Slow but very deadly. Sawblade claws.",
+    },
+],
+"Savannah": [
+    {
+        omen:"Clacking, creaking, rhythmic marching, flakes of rust.",
+        event:"3d6 wandering skeletons. Rusting equipment, recently applied warpaint, sharpened fingers and teeth.",
+    },
+    {
+        omen:"Earth rumbling, something whizzes through the air.",
+        event:"2d6 members of theKalawi tribe hunting an elephant, tiring him out. Angered if their kill is stolen.",
+    },
+    {
+        omen:"Thrumming felt in the skull. Sound of clanking armour. Muttering.",
+        event:"A Protean knightmare, a psychic mutant amalgamation of knights. Coated in armour, well armed, fast, argumentative.",
+    },
+    {
+        omen:"Strange tracks; thumb-sized holes in the loam, horizon to horizon.",
+        event:"A bone picker, stilt-walking hooded semi-undead scavenger. Imperious. Trades baubles for clean meat and dry socks.",
+    },
+    {
+        omen:"Cracked earth, holes from root networks. A large whistling tree.",
+        event:"A hoard gullet disguised as plant life. Brilliant, gluttonous. Inhales with hurricane-force winds. Inhaled creatures slumber.",
+    },
+    {
+        omen:"Sweltering heat. Sound of breaking branches. Smell of sap.",
+        event:"A baobab branch appears far above. Thick blue leaves, shimmering bark, no trunk. Its oval fruits are priceless.",
+    },
+    {
+        omen:"Silk scraps caught on trees, bursts of melodic song, silver scraps.",
+        event:"A young harpy covered in ragged finery and loops of jewellery. Will (incompetently) tell fortunes for treasure. Means well.",
+    },
+    {
+        omen:"Instant headache, flickers of false memories.",
+        event:"Herd of 2d6 psychic elephants. Purple corona of psy-discharge. Infrasonic trumpeting. Sparks of raw magic and trapped souls.",
+    },
+    {
+        omen:"Deep hoofprints, drifting violet tracker-kite.",
+        event:"Migratory herd of 3d6 scale-kine. Horned, plated, bulky, and suspicious of two-legged predators.",
+    },
+    {
+        omen:"Rippling thunder underfoot, creaking stone.",
+        event:"Swarm of fossilized sea life, animated by confused ghosts. A small ankle-breaking wave of stone.",
+    },
+    {
+        omen:"Winding trail of slime, blood, and dying plant life.",
+        event:"A Protean soldier, overcome by mutation, disintegrates into helpless flesh and raw matter.",
+    },
+    {
+        omen:"Laughter and singing, occasional shots. Broken twigs as marks.",
+        event:"2d4 overconfident and haughty Researchers, led by 2 untrustworthyKalawi guides. Faulty monster-warding device.",
+    },
+    {
+        omen:"Low trumpeting, passing headache, zigzagging elephant tracks.",
+        event:"A golem made to imitate a psychic elephant. Observed from a distance by 2 Researchers that created it.",
+    },
+    {
+        omen:"Mild headache, wiff of nostalgia and regret.",
+        event:"An animated psychic elephant skeleton on a half-remembered dream march. Flickering purple bones.",
+    },
+    {
+        omen:"Furrow in the earth. Hundreds of yards long, 20’ wide. Wurmsign.",
+        event:"3d6 wurm parasites, cast off and dying in the sun. Looking for new hosts. Enough energy for one or two leaps.",
+    },
+    {
+        omen:"Purring and snoring, incredulous yowls, shining yellow eyes.",
+        event:"A fat and torpid pumble cat, full of fieldmice and sagacity. Appreciates delicacies, offers nothing in return.",
+    },
+    {
+        omen:"Clanking, screaming metal, flakes of rust, trail of upturned plants.",
+        event:"2d6 armoured rhinos, plated in iron and brass. Intelligent but impatient. Demands, not negotiations.",
+    },
+    {
+        omen:"Bright yellow eyeshine, flash of white fur, snake-like tail, hissing.",
+        event:"An eye-grabbing lemur. Long scooping fingers, quick reactions, insatiable hunger for squishy ocular orbs.",
+    },
+    {
+        omen:"Floating spherical balloon, spare ropes, smell of pepper.",
+        event:"An aeronautical land-diver, tethered to their support balloon. Green liquid in a brass suit. Gurgles, collects samples.",
+    },
+    {
+        omen:"Wild laughter that devolves into muttering, smell of rotten meat,",
+        event:"A grand hyenacore, a hyena with a human face. Loves jokes and meat equally, but cannot abide sarcasm or hypocrisy.",
+    },
+    {
+        omen:"Smell of ozone, fast-moving clouds, twinkling air, dropping temperature.",
+        event:"A sudden cloudburst. Clothes and food soaked, books dampened. Grass immediately revives, flowers in hours.",
+    },
+],
+"Wastes": [
+    {
+        omen:"Reflective green cloud drifting towards the PCs, shining bright.",
+        event:"Floating cloud of rusting gas. Dissolves non-living matter. Drifts in a thick layer 2-3’ above the ground.",
+    },
+    {
+        omen:"Boneless, tar-coated coyote corpse, decaying flesh mostly intact.",
+        event:"Blob of sentient tar. Wants to slurp up bones. +1 HD per skeleton absorbed, approximates combined shape of victims.",
+    },
+    {
+        omen:"Pungent, foul stench. Melted bones and stone. Sharp hissing.",
+        event:"1d4 acrid jellyfish, gently floating. Tendrils move with lethal swiftness, paralyzing and digesting. Leaks and sprays acid.",
+    },
+    {
+        omen:"Soft singing and distant chords, dizziness. Shimmering mirages.",
+        event:"A starlet, whirling colourful fluid and song. Playful, wants to dance. Warps gravity and space around it. Inimical to earthly life.",
+    },
+    {
+        omen:"Multicoloured shooting star appears overhead. Sound of singing.",
+        event:"Four bright ones, searing motes of starstuff, collecting memory- tributes for the High Machine. Speak via magnetic dust.",
+    },
+    {
+        omen:"Distant snatches of deep and cloying song. Splashes. Fumes.",
+        event:"2d4 lugubrious petroleum mermaids sing and cavort in a tar pit. They will trade hydrocarbon pearls for shiny baubles.",
+    },
+    {
+        omen:"Horrid bleach scent drifts by. Skin crackles, nose burns, eyes sting.",
+        event:"A sickly Protean squire staggers blindly, tears streaming down its creased face. Its lower back writhes with larval parasites.",
+    },
+    {
+        omen:"An unbroken red trail, neither paint nor blood, stains the ground.",
+        event:"1d3 red ooze centaurs. Slug below, melting humanoid above. Faces contorted into soundless screams. Vaporizes iron.",
+    },
+    {
+        omen:"Subterranean gurgling, shed teeth, smell of ammonia.",
+        event:"1d6 predatory craters try to blend in with the landscape. Lure victims with gold tongues. Slow but very large.",
+    },
+    {
+        omen:"Popping and boiling stone, heat wave, angry squealing.",
+        event:"2d6 magma sprites swimming through stone. Can instantly ignite clothing and flesh at a touch.",
+    },
+    {
+        omen:"Singing, a high pitched whine, like glass edges rubbed together.",
+        event:"Three bramble fiends, smoke in their veins and silica in their throats, planting young glass brambles in sandy soil.",
+    },
+    {
+        omen:"Whooping hypersonic wails, rumbling, burrows, mounds.",
+        event:"A burrowing progenitor-wurm seeks the creatures that stole its selenium egg. Repelled by lightning, salt, and writing.",
+    },
+    {
+        omen:"Sizzling oil, groaning metal, stabbing lights, smoke trails.",
+        event:"A machine demon, all gears and fluids. Will trade enhanced robot parts and electrical power for pieces of soul.",
+    },
+    {
+        omen:"Clang of metal, disassembled mechanisms, bare footprints.",
+        event:"1d6+1 ever-silent Rust Monks scavenge for pieces of broken machinery and arrange them into a garden inside a crater.",
+    },
+    {
+        omen:"A smell of corrosion. Marching- songs in a dead language. Ticking.",
+        event:"1d4 ancient clockwork soldiers, bearing faded flags. They may attempt to bargain for replacement parts, or attack the party.",
+    },
+    {
+        omen:"Fresh boot marks, discarded chemical testing equipment.",
+        event:"1d8 Protean soldiers searching for chemical resources. Willing to offer information or medical services.",
+    },
+    {
+        omen:"Blaring musical note, red filter, waving and folding vegetation.",
+        event:"A floating glyph of warding, like a crack in reality. Pours ethereal bloodlight into the world. Cannot approach.",
+    },
+    {
+        omen:"Oil slick wake, flensed corpses, splatters of dense tar.",
+        event:"A beached tarpit kraken. Enraged, confused, dying, and still hungry. Flammable, but dangerously quick.",
+    },
+    {
+        omen:"Nausea, sweating, headaches, bitter taste, shimmering air.",
+        event:"A decaying plutonium golem. Leaking gouts of corium, still clad in burning graphite armour. Will forever taint the land.",
+    },
+    {
+        omen:"Trails of clean sand and polished bones, quiet popping, smell of salt.",
+        event:"3d6 horse-sized land starfish, in a variety of pastel colours. Harmless unless you lie down and allow them to gnaw on you."
+    },
+],

@@ -1,0 +1,624 @@
+﻿<!DOCTYPE html>
+<html>
+<style>
+    html, body {
+      width:  100%;
+      height: 100%;
+      margin: 0px;
+    }
+</style>
+<body>
+
+<p> This is a Random Castle Generator based on <a href="https://renaissancewoodsman.wordpress.com/2019/09/25/castle-building-robot-mk-i/">this post</a>. The generator can also be found <a href="https://paperelemental.blogspot.com/2019/10/magical-school-castle-map-generator.html">here</a> </p>
+
+<p>Because the map generator uses graphics formed from only simple shapes and unicode characters, the generator works as a standalone html file, and is very easy to modify:</p>
+
+<ol>
+  <li>Download this webpage (Rightclick in a blank space and select "Save As" or hit ctrl-s or cmd-s)</li>
+  <li>Open the html file in a text editor. </li>
+  <li>Scroll down to the section labelled "School Info". This contains the variables that control the names of each room. In particular, there is a big list called "deckrooms", and another called "trumprooms". </li>
+  <li>Simply change the title, subtitle, and symbol for each room to reassign their meanings.</li>
+  <li>Then save the file and open it in a webbrowser to generate the castle map.</li>
+</ol>
+
+<p>For example, the Lost Library looks like this in the code:</p>
+<pre>     {rank:"J", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Lost Library", subtitle:"(Secret)", symbol:"📜"},</pre>
+<p>Replace "Lost Libary" with "Swimming Pool", and the "📜" with "🏊", and then badabing, you've changed a room in the castle.</p>
+
+
+
+
+<!--This is the place where the map is generated.-->
+<input id="roomButton" type="button" style='font-family:inherit;' value="Shuffle Rooms" onclick="regenCastle();" /> 
+<input id="nameButton" type="button" style='font-family:inherit;' value="Randomize School" onclick="genSchoolInfo();regenCastle();" /> 
+<input id="emojiCheck" type="checkbox"  checked/>Check this box to toggle the Emoji Icons. 
+<input id="trumpCheck" type="checkbox"  />Check this box to toggle the Trump-suit.
+<div style="height:1000px; margin: 0px; padding:0px;" id="mapHolder">
+<canvas id="mapCanvas" width="2" height="2"  onclick="download_canvas_png()"  style="position:absolute; width:100%; margin: 0px;"> 
+Your browser does not support the HTML5 canvas tag.</canvas>
+</div>
+<details><summary>Click here to expand a static image of the above.</summary>
+  <div id="pngHolder">x</div>
+</details></div>
+
+
+
+
+
+
+
+
+
+<script>
+//Some basic setup for the generator script. 
+var canvas = document.getElementById("mapCanvas");
+var ctx = canvas.getContext("2d");
+
+function randomInt(max) {return Math.floor(Math.random() * max);}
+
+var emojiFlag = true;
+var trumpFlag = true;
+
+var schoolname, schooltitle, housenameS, housenameC, housenameH, housenameD, baserooms, deckrooms, trumprooms;
+var unplaced_rooms = [];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+//School Info
+//The section below is what you want to modify in order to tweak the generator to your own purposes.
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+//✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
+
+
+//house colors - These define the background color for the rooms.
+spadeColor = "#333";
+heartColor = "#f00";
+diamondColor = "#00f";
+clubColor = "#080";
+trumpColor = "Goldenrod"
+
+spadeHallColor = "#bbb";
+heartHallColor = "#dbb";
+diamondHallColor = "#bbd";
+clubHallColor = "#aba";
+trumpHallColor = "#d0d0bb";
+
+
+
+function genSchoolInfo(){
+  //Any of the lists below can be very easily changed.
+
+  //Generate a fake name for the school which is legally distinct from any pre-existing franchise.  
+  hognames = ["Pig","Boar","Onion","Kidney","Grumble","Tumble","Slug","Slime","Swine","Bacon","Pork","Head","Frog","Hair","Snail","Clam","Beef","Dog","Sausage","Wart","Flavor","Grime","Goat","Leech","Glog","Morti","Lumble","Phram","Wingle","Beau","Sandal","Crank","Worm","Fish","Loin","Petard","Gurgle","Squish","Hat","LeLapin","Hag","Owl","Sprit","Bon","Weed","Mal","Floggle","Wunder","Beaver","Twig","Ele","Liquor","Needle","Space",];
+  wartnames = ["farts","pus","mites","ticks","slime","wound","meat","cheese","lice","boil","burp","chuck","more","guts","trash","gore","warmer","heap","pile","time","butter","mold","hogs","motte","town","shire","leech","phyte","pimple","wiggle","slide","waffle","brandt","pipes"," Rovi","tz","pellets","whiskers","C'estSauve","burners","monger","lump","hoister","girder","ulcer","spittle","bottom","mancy","chaudron","leding","bar","fell","grund","fire","ice","rash","vier", " Jr.","hump","lore"];
+  schoolname = hognames[randomInt(hognames.length)]+wartnames[randomInt(wartnames.length)];
+
+  //This generates the title for the school, like "School of Witchstuff and Wizbangery"
+  magicnames1 = ["Witchstuff","Adventure","Dragons","Fightcraft","Eyebeams","Kicking Ass","Truenames","Sound","Passion","Dungeons","Mustard","Wands","Whale Lore","Stagecraft","Wizcraft","Study","Legerdemain","Deception","Goblins","Spellcraft","Maths","Curses","Amulets","Magecraft","Magic","Sigils","Evocation","Enchantment","Crystals","Artifice","Quibbling","Mistcraft","The Fine Arts","Starcraft", "Wine Tasting"];
+  magicnames2 = ["Wizbangery","Sorcery","Adventure","Heiromancy","Kicking Ass","Taking Names","Mystic Arts","Mystery","Windreading","Wumbology","Chicanery", "Crafts","Trickery","Cookery","Witchery","Stitchery","Misery","Thaumaturgy","Miracles","Alchemy","Necromancy","Buery","Cursebreaking","Sophistry","Duplicity","Blizzardry"];
+  schooltitle = " School of " + magicnames1[randomInt(magicnames1.length)]+" and "+ magicnames2[randomInt(magicnames2.length)]; //If you change this variable to just a blank string (""), then it won't display.
+
+  //generate house names
+  ravenNames = ["Woofle","Lion","Bird","Ghost","Animal","Dragon","Serpent","Sniffle","Jump","Tumble","Sass","Raisin","Sunny","Sneaker","Tender","Spider","Feather","Giant","Pheonix","Wolf","Horse","Blobfish","Up","Donkey","Flumph","Modron","Dingle","Humble","Compass","Crab","Lobster","Pony","Rooster","Monkey","Rat","Cattle","Tiger","Rabbit","Puppy","Kitten","Tapir","Hippo","Sloth","Lemur","Oxen","Capri","Hawk","Rotifer","Mouse","Rat","Bat","Kelpie","Mer","Stank","Moth","House",];
+  clawNames = ["tuft","grump","in","blow","claw","tooth","hoof","hug","love","fish","up","well","son","more","slayer","fang","bite","swin","mount","flame","roar","wood","flip","fluff","smell","fang","gimble","deau","mon","swaggle","mania","hair","lip","fire","ice","master","est","diff","or","end","grin","ling","mount","zoom","table","chair","house","heart","noir","suplex"];
+  housenameS = ravenNames[randomInt(ravenNames.length)]+clawNames[randomInt(clawNames.length)];
+  housenameC = ravenNames[randomInt(ravenNames.length)]+clawNames[randomInt(clawNames.length)];
+  housenameH = ravenNames[randomInt(ravenNames.length)]+clawNames[randomInt(clawNames.length)];
+  housenameD = ravenNames[randomInt(ravenNames.length)]+clawNames[randomInt(clawNames.length)];
+
+
+
+
+  //List of rooms. These don't have positions yet.
+  //(I used python to generate this javascript syntax, which I find vaguely amusing.)
+  //
+  //Feel free to change the values of the room objects in the list below. The variables are:
+  //
+  //rank and suit: Displayed in the lower left corner of each room and used to determine adjacencies. (Probably don't touch)
+  //hallway: a flag to determine whether the room is allowed to be placed above and below other hallways.
+  //bgcolor: The background color of the room on the map.
+  //title: the text displayed at the top of the room's square.
+  //subtitle: the smaller text displayed right below the title.
+  //symbol: The large text to place in the center of the room.  You can just paste an unicode symbol in here. All the "\uFE0F" nonsense was just to fix an error with the way blogger was displaying things. Use this generator as a local file, and those flags probably won't be necessary. 
+  //comment: doesn't do anything. I just used to to store little snippets of text info as a reminder to myself. Feel free to delete these variables entirely.
+
+  baserooms = [
+  {rank:"2", suit:"♠", hallway:1 , bgcolor:spadeHallColor, title:"Hallway", subtitle:"", symbol:""},
+  {rank:"2", suit:"♥", hallway:1 , bgcolor:heartHallColor, title:"Hallway", subtitle:"", symbol:""},
+  {rank:"2", suit:"♦", hallway:1 , bgcolor:diamondHallColor, title:"Hallway", subtitle:"", symbol:""},
+  {rank:"2", suit:"♣", hallway:1 , bgcolor:clubHallColor, title:"Hallway", subtitle:"", symbol:""},
+  {rank:"", suit:"☆", hallway:1 , bgcolor:"#FFD700", title:"Grand Hall", subtitle:"", symbol:""},
+    ];
+
+  deckrooms = [
+    {rank:"3", suit:"♠", hallway:1 , bgcolor:spadeHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"3", suit:"♥", hallway:1 , bgcolor:heartHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"3", suit:"♦", hallway:1 , bgcolor:diamondHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"3", suit:"♣", hallway:1 , bgcolor:clubHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"4", suit:"♠", hallway:1 , bgcolor:spadeHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"4", suit:"♥", hallway:1 , bgcolor:heartHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"4", suit:"♦", hallway:1 , bgcolor:diamondHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"4", suit:"♣", hallway:1 , bgcolor:clubHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"5", suit:"♠", hallway:1 , bgcolor:spadeHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"5", suit:"♥", hallway:1 , bgcolor:heartHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"5", suit:"♦", hallway:1 , bgcolor:diamondHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"5", suit:"♣", hallway:1 , bgcolor:clubHallColor, title:"Hallway", subtitle:"", symbol:""},
+    {rank:"6", suit:"♠", hallway:1 , bgcolor:spadeHallColor, title:"Hallway", subtitle:"Must be in "+housenameS, symbol:""},
+    {rank:"6", suit:"♥", hallway:1 , bgcolor:heartHallColor, title:"Hallway", subtitle:"Pitch Black", symbol:"", comment:"🕯\uFE0F"},
+    {rank:"6", suit:"♦", hallway:1 , bgcolor:diamondHallColor, title:"Hallway", subtitle:"Hidden Door", symbol:""},
+    {rank:"6", suit:"♣", hallway:1 , bgcolor:clubHallColor, title:"Hallway", subtitle:"Overgrown", symbol:"🌿"},
+    {rank:"7", suit:"♠", hallway:1 , bgcolor:spadeHallColor, title:"Hallway", subtitle:"Shifting Exit", symbol:""},
+    {rank:"7", suit:"♥", hallway:1 , bgcolor:heartHallColor, title:"Hallway", subtitle:"Precarious walkways", symbol:""},
+    {rank:"7", suit:"♦", hallway:1 , bgcolor:diamondHallColor, title:"Hallway", subtitle:"Riddle", symbol:"?"},
+    {rank:"7", suit:"♣", hallway:1 , bgcolor:clubHallColor, title:"Hallway", subtitle:"Guard Beast", symbol:"🐉"},
+    {rank:"8", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Lounge", subtitle:housenameS, symbol:"🛋\uFE0F"},
+    {rank:"8", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Lounge", subtitle:housenameH, symbol:"🛋\uFE0F"},
+    {rank:"8", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Lounge", subtitle:housenameD, symbol:"🛋\uFE0F"},
+    {rank:"8", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Lounge", subtitle:housenameC, symbol:"🛋\uFE0F"},
+    {rank:"9", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Study Room", subtitle:housenameS, symbol:"📝\uFE0F", comment:"🖋\uFE0F"},
+    {rank:"9", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Study Room", subtitle:housenameH, symbol:"📝\uFE0F"},
+    {rank:"9", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Study Room", subtitle:housenameD, symbol:"📝\uFE0F"},
+    {rank:"9", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Study Room", subtitle:housenameC, symbol:"📝\uFE0F"},
+    {rank:"10", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Classroom", subtitle:"Rhetoric", symbol:"🗣\uFE0F"},
+    {rank:"10", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Classroom", subtitle:"Gymnasium", symbol:"🏋\uFE0F"},
+    {rank:"10", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Classroom", subtitle:"Mathematics", symbol:"🧮"},
+    {rank:"10", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Classroom", subtitle:"Languages", symbol:"🗺\uFE0F"},
+    {rank:"J", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Secret Society", subtitle:"(Secret)", symbol:"\u2620\uFE0F"},
+    {rank:"J", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Vault", subtitle:"(Secret)", symbol:"\u2699\uFE0F"},
+    {rank:"J", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Lost Library", subtitle:"(Secret)", symbol:"📜"},
+    {rank:"J", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Exotic Garden", subtitle:"(Secret)", symbol:"🌵", comment:"🍄🌸"},
+    {rank:"Q", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Classroom", subtitle:"Alchemy", symbol:"\u2697\uFE0F"},
+    {rank:"Q", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Dueling Arena", subtitle:"", symbol:"\u2694\uFE0F"},
+    {rank:"Q", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Library", subtitle:"", symbol:"📖"},
+    {rank:"Q", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Kitchens", subtitle:"", symbol:"🍳"},
+    {rank:"K", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Classroom", subtitle:"Enchantment", symbol:"🧠"},
+    {rank:"K", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Classroom", subtitle:"Evocation", symbol:"🔥"},
+    {rank:"K", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Classroom", subtitle:"Divination", symbol:"🔮"},
+    {rank:"K", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Classroom", subtitle:"Necromancy", symbol:"\u26B0\uFE0F"},
+    {rank:"A", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Dorms", subtitle:housenameS, symbol:"🛌\uFE0F"},
+    {rank:"A", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Dorms", subtitle:housenameH, symbol:"🛌\uFE0F"},
+    {rank:"A", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Dorms", subtitle:housenameD, symbol:"🛌\uFE0F"},
+    {rank:"A", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Dorms", subtitle:housenameC, symbol:"🛌\uFE0F"},
+    {rank:"1", suit:"★", hallway:0 , bgcolor:"#FFD700", title:"Headmaster's", subtitle:"Office", symbol:"🧙", comment:"Magician"},
+  ] ;
+
+  trumprooms = [
+    {rank:"C", suit:"♠", hallway:0 , bgcolor:spadeColor, title:"Scorpion Farm", subtitle:"", symbol:"🦂"},
+    {rank:"C", suit:"♥", hallway:0 , bgcolor:heartColor, title:"Stables", subtitle:"", symbol:"🐎"},
+    {rank:"C", suit:"♦", hallway:0 , bgcolor:diamondColor, title:"Birdhouse", subtitle:"", symbol:"🦉"},
+    {rank:"C", suit:"♣", hallway:0 , bgcolor:clubColor, title:"Aquarium", subtitle:"", symbol:"🐡"},
+    {rank:"2", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"", symbol:"", comment:"Popess"},
+    {rank:"3", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"", symbol:"", comment:"Empress"},
+    {rank:"4", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"", symbol:"", comment:"Emperor"},
+    {rank:"5", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"", symbol:"", comment:"Pope"},
+    {rank:"6", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"Too Narrow", symbol:"", comment:"Lovers"},
+    {rank:"7", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"Frictionless", symbol:"", comment:"Chariot"},
+    {rank:"8", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Lounge", subtitle:"Staff", symbol:"🛋\uFE0F", comment:"Justice"},
+    {rank:"9", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Quiet Room", subtitle:"Neutral", symbol:"📝\uFE0F", comment:"Hermit"},
+    {rank:"10", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Classroom", subtitle:"Basic Safety", symbol:"🎲", comment:"Wheel of Fortune"},
+    {rank:"11", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Dungeons", subtitle:"(Secret)", symbol:"\u26D3\uFE0F", comment:"Strength"},
+    {rank:"12", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Supply Closet", subtitle:"(Forbidden)", symbol:"🧻\uFE0F", comment:"Hangman🕸"},
+    {rank:"13", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Infirmary", subtitle:"", symbol:"💉", comment:"Death"},
+    {rank:"14", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Classroom", subtitle:"Cantrips 101", symbol:"\u2728\uFE0F", comment:"Temperance"},
+    {rank:"15", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Dorms", subtitle:"Cleaning Imps", symbol:"👹\uFE0F", comment:"The Devil🛏"},
+    {rank:"16", suit:"★", hallway:1 , bgcolor:trumpHallColor, title:"Hallway", subtitle:"Tower Stair", symbol:"\u2630", comment:"The Tower"},
+    {rank:"17", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Portal Room", subtitle:"(Forbidden)", symbol:"🌀", comment:"The Star"},
+    {rank:"18", suit:"★", hallway:0 , bgcolor:trumpColor, title:"[REDACTED]", subtitle:"(Forbidden)", symbol:"🦞", comment:"The Moon"},
+    {rank:"19", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Wardstone", subtitle:"(Forbidden)", symbol:"💠", comment:"The Sun"},
+    {rank:"20", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Laundry", subtitle:"(Forbidden)", symbol:"🧺", comment:"Judgement"},
+    {rank:"21", suit:"★", hallway:0 , bgcolor:trumpColor, title:"Classroom", subtitle:"Chronomancy", symbol:"\u23F3\uFE0F", comment:"ZA WARUDO"},
+  ] ;
+}
+genSchoolInfo();
+
+
+
+//Here are some simple flags to change how the map is displayed, that way you don't have to much around in the code below.
+//Change any of these from 1 to 0 to disable that part of the map display.
+
+var tallTowerFlag = 1; //Change to disable the multiblock tower card.
+var housenameKeyFlag = 1; //Change to disable to key in the lower left of the map which displays the names of each house.
+var backgroundFlag = 1; //Change this to prevent the background from rendering. Instead the background will just be transparent.
+
+
+
+
+//Finally, here are some weights for the room placement. 
+//Rooms can go horizontally next to each other, (vertically if they are both hallways) or they can go on their own at the ground level.
+//Increasing these weights increases the probability of the cooresponding outcome.
+
+var horizontalWeight = 8; //changes the chance of a extending an existing floor.
+var aboveWeight = 20; //the chance of of a hallway being placed above a preexisting hallway
+var belowWeight = 10; //the chance of a hallway being placed below a preexisting hallway.
+var aloneWeight = 1; //the chance of a room being placed by itself on the ground level of the castle.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------------------------------
+//Functions for building the castle
+//Probably stop scrolling down at this point, 
+//The code is really kind of a mess.
+//--------------------------------------------------------------------
+
+function place_room(room, position){
+  room.xpos = position[0];
+  room.ypos = position[1];
+  castle.map[position] = room;
+      if(tallTowerFlag){
+        //special Tower Exception -- Make big and stronk
+        if (room.rank == "16"){
+          for (var i=-3;i<6;i++){
+            var copyRoom = {};
+            for (var keyname in room){
+              copyRoom[keyname] = room[keyname];
+            }
+            copyRoom.ypos = room.ypos - i;
+            if (!([copyRoom.xpos,copyRoom.ypos] in castle.map)){
+              castle.map[[copyRoom.xpos,copyRoom.ypos]] = copyRoom;
+              castle.rooms.push(copyRoom);
+            }
+            if (copyRoom.ypos > castle.bounds[1][1]){castle.bounds[1][1] = copyRoom.ypos ;}
+            if (copyRoom.ypos < castle.bounds[1][0]){castle.bounds[1][0] = copyRoom.ypos ;}
+          }
+        }
+      }
+  castle.rooms.push(room);
+  if (position[0] > castle.bounds[0][1]){castle.bounds[0][1] = position[0];}
+  if (position[0] < castle.bounds[0][0]){castle.bounds[0][0] = position[0];}
+  if (position[1] > castle.bounds[1][1]){castle.bounds[1][1] = position[1];}
+  if (position[1] < castle.bounds[1][0]){castle.bounds[1][0] = position[1];}
+}
+
+
+//Rules for building castle:
+// * A card may only go in an empty space
+// * A card may go horizontally next to a room that shares rank or suit.
+// * headmaster's office may go horizontally next to anything
+// * A hallway (ranks 2-7) may go above or below another hallway that share the same rank or suit
+// * any room may go on the ground floor away from the castle as a new building.
+//weights are applied to make verticality more common
+function find_valid_position(newroom){
+  var possiblePos = [];
+  for (var i = 0; i < castle.rooms.length; i++){
+    var room = castle.rooms[i];
+    //Check for horizontal adjacencies
+    if ((room.suit == newroom.suit || room.rank == newroom.rank) || newroom.rank=="1" || (tallTowerFlag && room.rank=="16" && newroom.hallway==0)){ //(newroom.suit == "★"   &&    room.hallway) or (room.hallway != newroom.hallway )
+      for(var repeat=0; repeat < horizontalWeight; repeat++){
+        if (!([room.xpos+1,room.ypos] in castle.map)){possiblePos.push([room.xpos+1,room.ypos])}
+        if (!([room.xpos-1,room.ypos] in castle.map)){possiblePos.push([room.xpos-1,room.ypos])}
+      }
+    }
+    //Check for vertical hallway adjacencies
+    if (room.hallway && newroom.hallway && (room.suit == newroom.suit || room.rank == newroom.rank)){
+      for(var repeat=0; repeat < belowWeight; repeat++){
+        if (!([room.xpos,room.ypos+1] in castle.map)){possiblePos.push([room.xpos,room.ypos+1])}
+      }
+      for(var repeat=0; repeat < aboveWeight; repeat++){
+        if (!([room.xpos,room.ypos-1] in castle.map)){possiblePos.push([room.xpos,room.ypos-1])}
+      }
+    }
+  }
+  //add space for extra buildings
+  var bounds = castle.bounds;
+  for(var repeat=0; repeat < aloneWeight; repeat++){
+    possiblePos.push([bounds[0][0]-randomInt(4)-2,0]);
+    possiblePos.push([bounds[0][1]+randomInt(4)+2,0]);
+  }
+
+  return possiblePos[randomInt(possiblePos.length)];
+}
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//Algorithm to build castle.
+
+function regenCastle(){
+
+  //read the checkboxes
+  if(document.getElementById("emojiCheck").checked){
+    emojiFlag = true;
+  } else {
+    emojiFlag = false;
+  }
+
+  if(document.getElementById("trumpCheck").checked){
+    trumpFlag = true;
+  } else {
+    trumpFlag = false;
+  }
+
+  //blank out the castle
+  castle = {name:schoolname, rooms:[], map: {}, bounds:[[0,0],[0,0]]};
+
+  //copy the list of rooms so we can reuse it later.
+  var unplaced_rooms = [];
+  for (var i = 0; i <deckrooms.length; i++){
+    masterRoom = deckrooms[i];
+    var copyRoom = {};
+    for (var keyname in masterRoom){
+      copyRoom[keyname] = masterRoom[keyname];
+    }
+    unplaced_rooms.push(copyRoom);
+  }
+  //If using the trump suit, add in the extra tarot cards.
+  if(trumpFlag){
+    for (var i = 0; i <trumprooms.length; i++){
+      masterRoom = trumprooms[i];
+      var copyRoom = {};
+      for (var keyname in masterRoom){
+        copyRoom[keyname] = masterRoom[keyname];
+      }
+      unplaced_rooms.push(copyRoom);
+    }
+  }
+  
+  //Initialize castle with the basic rooms. Remember that +y is down, -y is up.
+  place_room(baserooms[4],[0,0]);
+  place_room(baserooms[0],[0,1]);
+  place_room(baserooms[1],[1,0]);
+  place_room(baserooms[2],[0,-1]);
+  place_room(baserooms[3],[-1,0]);
+  
+  //Generate the rest of the castle
+  while(unplaced_rooms.length > 0 ){
+    //pick a card and add it to castle
+    var cardindex = randomInt(unplaced_rooms.length);
+    var newroom = unplaced_rooms[cardindex];
+    var newpos = find_valid_position(newroom);
+    place_room(newroom,newpos);
+    //remove that card from deck
+    unplaced_rooms.splice(cardindex,1);
+  }
+
+  genCastleMap();
+}
+
+
+//----------------------------------------------------------------
+//Drawing Functions. Should I consolidate the text drawing? Nah. Too much work. It's fine? It's fine... 
+
+function drawLine(x1,y1,x2,y2,context) {
+  context.moveTo(x1,y1);
+  context.lineTo(x2,y2);  
+  context.strokeStyle = '#000';
+  context.stroke(); 
+}
+
+//take in array of coords. fill polygon
+function drawPoly(vertices,fillColor,lineColor){
+  ctx.fillStyle = fillColor;
+  ctx.beginPath();
+  for (var i = 0; i < vertices.length; i++) {
+    ctx.lineTo(vertices[i][0],vertices[i][1]);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = lineColor;
+  ctx.stroke(); 
+}
+
+function drawRectangle(x1, y1,x2,y2,fillColor,lineColor,linewidth){
+  ctx.lineWidth = linewidth;
+  ctx.beginPath();
+  ctx.rect(x1, y1,x2,y2);
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  ctx.strokeStyle = lineColor;
+  ctx.stroke(); 
+}
+
+function draw_schoolname_text(text,x,y,s,maxwidth){
+  ctx.font = (s).toString()+"px serif";
+  ctx.miterLimit=10; //fix some jaggies in MWV, and A
+  ctx.textAlign = "center";
+  ctx.textBaseline = 'bottom'; 
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 10;
+  ctx.strokeText(text, x, y,maxwidth);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(text,x,y,maxwidth);
+}
+
+function draw_housename_text(text,x,y,s,housecolor){
+  drawRectangle(x-s*0.75,y-s/2,s*0.7,s/2,housecolor,"#000",4)
+  ctx.font = (s/2).toString()+"px Arial Black";
+  ctx.miterLimit=10; //fix some jaggies in MWV, and A
+  ctx.textAlign = "left";
+  ctx.textBaseline = 'bottom'; 
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 10;
+  ctx.strokeText(text, x, y);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(text,x,y);
+}
+
+function draw_room_title_text(text,x,y,s){
+  ctx.font = (s/6).toString()+"px Arial Black";
+  ctx.miterLimit=4; //fix some jaggies in MWV, and A
+  ctx.textAlign = "center";
+  ctx.textBaseline = 'bottom'; 
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 4;
+  ctx.strokeText(text, x, y,s);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(text,x,y,s);
+}
+
+function draw_room_subtitle_text(text,x,y,s){
+  ctx.font = (s/8).toString()+"px Arial Black";
+  ctx.miterLimit=4; //fix some jaggies in MWV, and A
+  ctx.textAlign = "center";
+  ctx.textBaseline = 'bottom'; 
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 4;
+  ctx.strokeText(text, x, y,s);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(text,x,y,s);
+}
+
+function draw_room_card_text(text,x,y,s){
+  ctx.font = (s/6).toString()+"px Arial Black";
+  ctx.miterLimit=4; //fix some jaggies in MWV, and A
+  ctx.textAlign = "left";
+  ctx.textBaseline = 'bottom'; 
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 4;
+  ctx.strokeText(text, x, y,s);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(text,x,y,s);
+}
+
+function draw_room_symbol_text(text,x,y,s){
+  ctx.font = (s*0.4).toString()+"px serif";
+  ctx.miterLimit=4; //fix some jaggies in MWV, and A
+  ctx.textAlign = "center";
+  ctx.textBaseline = 'middle'; 
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 4;
+  ctx.strokeText(text, x, y,s);
+  ctx.fillStyle = '#eee';
+  ctx.fillText(text,x,y,s);
+}
+//(It's not fine)
+//==========================================================
+//==========================================================
+//==========================================================
+
+function drawCastle(originx,originy,squaresize){
+  for (var i = 0; i < castle.rooms.length; i++){
+    var room = castle.rooms[i];
+    var roomx = room.xpos*squaresize + originx;
+    var roomy = room.ypos*squaresize + originy;
+
+    drawRectangle(roomx,roomy,squaresize,-squaresize,room.bgcolor,'#000',6);
+
+    //label text for each room
+    suit_fix = {"♠":"\u2660", "♥":"\u2665", "♦":"\u2666", "♣":"\u2663", "★":"\u2605", "☆":"\u2606"}; //wasn't rendering in blogger without this. No idea why
+    draw_room_card_text(suit_fix[room.suit] + room.rank,roomx+squaresize/50,roomy-squaresize/50,squaresize*0.95);
+
+    draw_room_subtitle_text(room.subtitle,roomx+squaresize/2,roomy-squaresize*0.68,squaresize*0.95);
+    draw_room_title_text(room.title,roomx+squaresize/2,roomy-squaresize*0.8,squaresize*0.95);
+
+    if (emojiFlag){draw_room_symbol_text(room.symbol,roomx+squaresize/2,roomy-squaresize*0.4,squaresize);}
+
+  }
+}
+
+function genCastleMap(){
+
+  var squaresize = 150; //Size, in pixels, of each room.
+
+  //refresh canvas and castle
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  //detect the best possible size for the canvas
+  var bounds = castle.bounds;
+  ctx.canvas.width  = squaresize*(bounds[0][1]-bounds[0][0]+4);
+  ctx.canvas.height = squaresize*(bounds[1][1]-bounds[1][0]+5.5);
+
+  //Adjust the size of the div holding the map
+  var mapHolder = document.getElementById("mapHolder");
+  var positionInfo =  ctx.canvas.getBoundingClientRect();
+  mapHolder.style="height:"+(ctx.canvas.height / ctx.canvas.width * positionInfo.width).toString()+"px;"
+  document.getElementById("mapCanvas").style="position:absolute; width:"+positionInfo.width+"px; margin: 0px;";
+
+  if (backgroundFlag){
+    //draw background
+    drawRectangle(0, 0, canvas.width, canvas.height,'midnightblue','#0000',0);
+    //draw ground
+    drawRectangle(0, squaresize*-(bounds[1][0]-3)+squaresize/40, canvas.width, canvas.height,'DarkOliveGreen','#354B0F',10);
+    //draw the mooooooooooooon🌙🌚🌜🌝🌛🦑🌑🌒🌓🌔🌕🌖🌗🌘🎑🥮🦑
+    draw_schoolname_text("🌒",ctx.canvas.width/6,0.9*ctx.canvas.height/4,squaresize*1.5,ctx.canvas.width);
+  }
+
+  //draw title
+  draw_schoolname_text(schoolname+schooltitle,ctx.canvas.width/2,squaresize,squaresize,ctx.canvas.width);
+
+  if (housenameKeyFlag){
+    //draw House Legend
+    draw_housename_text("House "+housenameS,squaresize,ctx.canvas.height-squaresize*0.3,squaresize,spadeColor);
+    draw_housename_text("House "+housenameH,squaresize,ctx.canvas.height-squaresize*0.8,squaresize,heartColor);
+    draw_housename_text("House "+housenameD,squaresize,ctx.canvas.height-squaresize*1.3,squaresize,diamondColor);
+    draw_housename_text("House "+housenameC,squaresize,ctx.canvas.height-squaresize*1.8,squaresize,clubColor);
+  }
+
+  //figure out where to place the castle
+  var castleYorigin = squaresize*-(bounds[1][0]-3)
+  var castleXorigin = squaresize*-(bounds[0][0]-2) - squaresize/2;
+
+  drawCastle(castleXorigin,castleYorigin,squaresize);
+
+  //Prep the backup version of the image. 
+  var img  = canvas.toDataURL("image/png");
+  document.getElementById("pngHolder").innerHTML = '<img src="'+img+'" style="position:absolute; width:100%;" onclick="" />';
+
+}
+
+//Make the magic happen.
+regenCastle();
+
+//^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v^v
+
+function download_canvas_png(){
+
+   //convert to image. Thanks Mr. Mozilla.
+   canvas.toBlob(function(blob) {
+    var newImg = document.createElement('img'),
+        url = URL.createObjectURL(blob);
+    newImg.onload = function() {
+      // no longer need to read the blob so it's revoked
+      URL.revokeObjectURL(url);
+    };
+    newImg.src = url;
+    var link = document.createElement('a');
+    link.download = schoolname+"SchoolMap.png";
+    link.target="_blank"
+    link.href = url;
+    link.click();
+    //document.body.appendChild(newImg);
+  });
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
