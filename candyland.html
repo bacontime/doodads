@@ -4,7 +4,7 @@
     body {margin: 0;}    h3 {margin-top:0;}
     dt {font-weight: bold;}    dl,dd {font-size: .9rem;}    dd {margin-bottom: 1em;}
     main{display:flex; flex-wrap: wrap;}
-    svg {background-color:#0005; flex: 2 200px; }
+    svg {background-color:#F002; flex: 2 200px; }
     div {padding:1rem; flex: 3 20rem; min-height: 120vh;}
 </style>
 <!--This is a webpage implementation of the Massive Community Hexcrawl, orchestrated by Skerples.CC BY-NC-SA 4.0, etc.
@@ -21,18 +21,6 @@ This file is completely standalone, so you can just save itas a .html and edit i
     <div id="textHolder">Click on a hex.</div>
 </main>
 
-
-<svg viewBox="0 0 200 200">
-    <foreignObject x="20" y="20" width="160" height="160">
-      <div style="color: white; font: 18px serif; height: 100%; overflow: auto;">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Sed mollis mollis mi ut ultricies. Nullam magna ipsum,
-        porta vel dui convallis, rutrum imperdiet eros. Aliquam
-        erat volutpat.
-      </div>
-    </foreignObject>
-  </svg>
-
 <script>
     //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -42,7 +30,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
     //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
     
     var hexMap = {
-        numColumns:10,
+        numColumns:5,
         numRows:4,
         landformColors: {
             "Badlands": "PaleGoldenRod",
@@ -74,6 +62,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
                 terrainFeature: "Laminated layers of pristine volcanic glass, as if newly cooled. ", 
                 obviousFeature: "Burbling volcanic pit, ringed by smooth metal gantries and floating wires. ", 
                 hiddenFeature: "Slug-like magma sprites, jealous of their hidden mineral wealth. They swim through stone. ", 
+                symbol: "🐀",
             },
             {col:1, row:3, id:"hex1.3", faction:"Rust Monks", landform:"Bluffs", 
                 terrainFeature: "Hoodoo-lined cliff walls of banded ochre and ebon sandstone. ", 
@@ -622,7 +611,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
     //define the parameters for the hex map.
     var numColumns = hexMap.numColumns;
     var numRows = hexMap.numRows;
-    var hexOuterRadius = 40; 
+    var hexOuterRadius = 30; 
     var hexInnerRadius = hexOuterRadius * Math.sqrt(3)/2; 
     var marginSize = hexOuterRadius / 5;
     
@@ -706,7 +695,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
         svgGroup += createText(hexX,hexY-hexInnerRadius*0.4,hexOuterRadius*0.6,hexMap.factionColors[hex.faction], "black", hex.col+"."+hex.row);
         svgGroup += createText(hexX,hexY+hexInnerRadius*0.3,hexOuterRadius*0.2,hexMap.factionColors[hex.faction], "none", hex.faction);
         if (hex.symbol){
-            svgGroup += createText(hexX,hexY-hexInnerRadius*0.6,hexOuterRadius*0.3,hexMap.factionColors[hex.faction], "none", hex.symbol);
+            svgGroup += createText(hexX,hexY-hexInnerRadius*0.8,hexOuterRadius*0.3,hexMap.factionColors[hex.faction], "none", hex.symbol);
         }
         svgGroup += `</g>`;
         return svgGroup;
