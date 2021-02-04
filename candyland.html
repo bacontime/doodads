@@ -22,6 +22,17 @@ This file is completely standalone, so you can just save itas a .html and edit i
 </main>
 
 
+<svg viewBox="0 0 200 200">
+    <foreignObject x="20" y="20" width="160" height="160">
+      <div style="color: white; font: 18px serif; height: 100%; overflow: auto;">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Sed mollis mollis mi ut ultricies. Nullam magna ipsum,
+        porta vel dui convallis, rutrum imperdiet eros. Aliquam
+        erat volutpat.
+      </div>
+    </foreignObject>
+  </svg>
+
 <script>
     //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -31,7 +42,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
     //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
     
     var hexMap = {
-        numColumns:5,
+        numColumns:10,
         numRows:4,
         landformColors: {
             "Badlands": "PaleGoldenRod",
@@ -39,6 +50,10 @@ This file is completely standalone, so you can just save itas a .html and edit i
             "Bluffs": "Gainsboro",
             "Savannah": "YellowGreen",
             "Wastes": "SandyBrown",
+            "Wastes": "SandyBrown",
+            "Wastes": "SandyBrown",
+            "Syrup Swamp": "Brown",
+            "Peppermint Forest": "Pink",
         },
         factionColors: {
             "Neutral": "black",
@@ -47,9 +62,10 @@ This file is completely standalone, so you can just save itas a .html and edit i
             "Rust Monks": "	#B7410E",
             "Protean Army": "#0F52BA",
             "Pallid Knights": "White",
+            "Bubblegum Dynasty": "White",
         },
         hexes: [
-            {col:1, row:1, id:"hex1.1", faction:"Neutral", landform:"Wastes", 
+            {col:1, row:1, id:"hex1.1", faction:"Bubblegum Dynasty", landform:"Syrup Swamp", 
                 terrainFeature: "Gray and rust-orange dirt, sickly brown grass. Metal beams protrude.  ", 
                 obviousFeature: "Bands of eyeless purple- hued humans build small settlements. Will  trade warily, listen cautiously, speak rarely. ", 
                 hiddenFeature: "The crater-tomb of the Water That Eats. Sacrificing a friend or love one to it grants a boon, often tainted. ", 
@@ -68,36 +84,6 @@ This file is completely standalone, so you can just save itas a .html and edit i
                 terrainFeature: "Angular shards of granite and basalt. Eerie hard-light shadows. ", 
                 obviousFeature: "The Starlight Cathedral. Motes of starlight trapped to form windows, arches, pews. ", 
                 hiddenFeature: "Pieces of iridescent weightless mirrors, accidentally created. They only reflect the truth. ", 
-            },
-            {col:1, row:5, id:"hex1.5", faction:"Researchers", landform:"Barren Fells", 
-                terrainFeature: "Ash covered basalt descents. Sudden updrafts and crosswinds. ", 
-                obviousFeature: "Granite aqueduct carries oily water from 1.4 Drinking it brings you closer to both death and undeath. ", 
-                hiddenFeature: "Paper golems tend to meditative redoubt. Disillusioned mortal Researcher curates secrets in rock garden.  ", 
-            },
-            {col:1, row:6, id:"hex1.6", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Sharp arid cliffs, rust red rivers, carved to run at sharp angles. ", 
-                obviousFeature: "Iron-forged cliff face of three-headed goddess, free of rust. Her centre mouth has a staircase descending. ", 
-                hiddenFeature: "At the deepest point of a pond fed by the river, a vault door. Inside, an armoury of terrible weapons. ", 
-            },
-            {col:1, row:7, id:"hex1.7", faction:"Kalawi Tribe", landform:"Savannah", 
-                terrainFeature: "Stands of red-leafed trees dot the scrub. Tall obsidian spires. ", 
-                obviousFeature: "Tribal stronghold extracts, works, trades obsidian. Ivory armour, ironwood walls. ", 
-                hiddenFeature: "Internal factional struggle supplanted rightful heir. Partisans lair in mine, skin cut by shards to mark intent. ", 
-            },
-            {col:1, row:8, id:"hex1.8", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Sandstone mesas, tinged with orange streaks and small rockfalls. ", 
-                obviousFeature: "Protean Army scout trapped under a landslide. Bleeding ichor. Promises wealth if removed. Lies. ", 
-                hiddenFeature: "Buried hoard of psychic elephant ivory. Valuable. Makes excellent magic items or focuses. Might be haunted. ", 
-            },
-            {col:1, row:9, id:"hex1.9", faction:"Protean Army", landform:"Savannah", 
-                terrainFeature: "Unusually tall kauri trees, bladed shrubs, finger-thick grasses. ", 
-                obviousFeature: "Concentric castle, under construction. Kalawi tribe labour, paid in alcohol, protean drugs, and iron. ", 
-                hiddenFeature: "Wellspring of soul-stuff, granting equally power and madness. Psychic elephants stand guard. ", 
-            },
-            {col:1, row:10, id:"hex1.10", faction:"Kalawi Tribe", landform:"Savannah", 
-                terrainFeature: "Waist-high grasslands, animal trails, patches of burnt soil. ", 
-                obviousFeature: "Signs of recent battle. Discarded broken weapons, crackling purple fire, smouldering craters. ", 
-                hiddenFeature: "Kalawi warcamp licking  wounds, buring the dead. Hidden by near- invisibility magic. ", 
             },
             {col:2, row:1, id:"hex2.1", faction:"Rust Monks", landform:"Wastes", 
                 terrainFeature: "Dry creek bed. Pockets of sticky liquid seep up and evaporate. ", 
@@ -119,36 +105,6 @@ This file is completely standalone, so you can just save itas a .html and edit i
                 obviousFeature: "The Elevenfold Table, a monolithic construct on a flattened peak. Ringed by stairs, decrepit bridges. ", 
                 hiddenFeature: "By the light of the moon, the shades Elevenfold Knights test new applicants and perhaps answer questions. ", 
             },
-            {col:2, row:5, id:"hex2.5", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Karsts, tall bushes covering ponds, creeks. ", 
-                obviousFeature: "Right-angle maze of eroded limestone. Damp. Many insects and small scurrying animals. ", 
-                hiddenFeature: "Second layer of maze expands. Underground rivers, floods, bone pits, trapped gold, and wurmspawn.  ", 
-            },
-            {col:2, row:6, id:"hex2.6", faction:"Researchers", landform:"Wastes", 
-                terrainFeature: "Ochre pits of sludge. Low hills of oxidized rock. ", 
-                obviousFeature: "A massive rusty hulk with swaying spires, partially buried in the sludge. Traces of meteoric slag. ", 
-                hiddenFeature: "The ancient hulk’s golem crew digging holes, scrounging parts from the crash to repair the vessel. ", 
-            },
-            {col:2, row:7, id:"hex2.7", faction:"Protean Army", landform:"Savannah", 
-                terrainFeature: "Dried grass, large bushes, dancing neon flowers. ", 
-                obviousFeature: "Some suspiciously large bushes, actually living granaries for the Kalawi. Empty but still usable. ", 
-                hiddenFeature: "Headquarters of Protean infiltrators causing trouble in 1.7. Shed skin, rebirth sacs, scavenged gear. ", 
-            },
-            {col:2, row:8, id:"hex2.8", faction:"Kalawi Tribe", landform:"Savannah", 
-                terrainFeature: "Small rivers, dried grass, herds of antelope. ", 
-                obviousFeature: "Elephant graveyard. A Kalawi native helps them pass on. A few elderly elephants milling about. ", 
-                hiddenFeature: "Ostereomancer collects elephant bones. Wants exotic bones, spines preferred. Can locate undead. ", 
-            },
-            {col:2, row:9, id:"hex2.9", faction:"Kalawi Tribe", landform:"Savannah", 
-                terrainFeature: "Silver grass sea, gently swaying. Patches of taller reed-like brush. ", 
-                obviousFeature: "Round grass-free plain. Single-occupant huts, dispersed. Hairless, speechless elders wander between huts. ", 
-                hiddenFeature: "Clusters of tusks carved with intricate fractal patterns, hidden in the grass. Subtly steer ley lines. ", 
-            },
-            {col:2, row:10, id:"hex2.10", faction:"Neutral", landform:"Wastes", 
-                terrainFeature: "Cracked earth, salt pans. Water pools but nothing grows. ", 
-                obviousFeature: "Cloud constantly raining. Slowly drifts through region. Rain is slightly metallic. ", 
-                hiddenFeature: "Kalawi hunger-priest binds the cloud here. He becomes less visible when wet. ", 
-            },
             {col:3, row:1, id:"hex3.1", faction:"Neutral", landform:"Badlands", 
                 terrainFeature: "Jagged limestone outcrops. Few plants larger than lichen. ", 
                 obviousFeature: "A single bristlecone pine, twisted by wind. Unreachable, always seems to be visible in the distance. ", 
@@ -168,36 +124,6 @@ This file is completely standalone, so you can just save itas a .html and edit i
                 terrainFeature: "Jagged cliffs. Between them, craters filled with black glass. ", 
                 obviousFeature: "A north-south pass.  Heavily fortified trading post run by mind- addled ex-Researcher.  ", 
                 hiddenFeature: "A buried titan, dreaming. Nightmares manifest as solid shadows, hostile to all, but particularly Pallid Knights. ", 
-            },
-            {col:3, row:5, id:"hex3.5", faction:"Researchers", landform:"Bluffs", 
-                terrainFeature: "Trio of high buttes in a windy plain of scrub grass and chalky gravel. ", 
-                obviousFeature: "Metal scaffolds, ladders, and bridges frame and span the buttes. Onion-shaped structures visible above. ", 
-                hiddenFeature: "A river runs beneath the buttes, harnessed via enormous iron wheels as a subterranean power source.  ", 
-            },
-            {col:3, row:6, id:"hex3.6", faction:"Researchers", landform:"Bluffs", 
-                terrainFeature: "Arid valley, limited wildlife and vegetation. Irregular bluffs. ", 
-                obviousFeature: "Ancient remains of construction camp. Desiccated supplies, rusted tools. Signs project was massive. ", 
-                hiddenFeature: "Hidden entrance to inside of largest bluff, which is hollow. Enclosed ecosystem (research project). ", 
-            },
-            {col:3, row:7, id:"hex3.7", faction:"Rust Monks", landform:"Wastes", 
-                terrainFeature: "Saltwater sinkholes and ferrous fenland. Manufactured reedbeds. ", 
-                obviousFeature: "Massive basalt altar balances atop vast obsidian centipede. Its sharp feet impale headless carrion birds. ", 
-                hiddenFeature: "Shimmering puddle only  visible when facing south; an acidic heat- mirage that you can reach and drink.  ", 
-            },
-            {col:3, row:8, id:"hex3.8", faction:"Neutral", landform:"Savannah", 
-                terrainFeature: "Spiralling sinkhole miles across. Floating grass islands. ", 
-                obviousFeature: "The Sucking, centre of the sinkhole. Audible from anywhere in the hex, it sprays up plumes of gas and juice. ", 
-                hiddenFeature: "Contents of the sinkhole are spat out on the far side of the moon as a vibrant freeze-dried stain. ", 
-            },
-            {col:3, row:9, id:"hex3.9", faction:"Kalawi Tribe", landform:"Wastes", 
-                terrainFeature: "Plain of hollow bottletrees, wood stained cyan by floodwaters. ", 
-                obviousFeature: "Silt-enclave of Kalawi Tribe sorcerers. Fanciful wooden machines cook, clean, entertain guests. ", 
-                hiddenFeature: "Enclave kidnaps Pallid Knights to drown in tree hollows. Produces oblong gourds that power their magic. ", 
-            },
-            {col:3, row:10, id:"hex3.10", faction:"Neutral", landform:"Wastes", 
-                terrainFeature: "Forest of giant fungi. White-grey, inedible, burn damply and smokily. ", 
-                obviousFeature: "Stone throne covered in mold and fungal growth. Galleries of faceless kneeling statues. ", 
-                hiddenFeature: "Gold-plated mushroom effigy under the mold. A new species of fungus grows in its vicinity every day. ", 
             },
             {col:4, row:1, id:"hex4.1", faction:"Protean Army", landform:"Bluffs", 
                 terrainFeature: "Oily rivulets bounded by yellow- streaked crumbling cliff faces.  ", 
@@ -219,36 +145,6 @@ This file is completely standalone, so you can just save itas a .html and edit i
                 obviousFeature: "A keep with a high tower perched atop a rocky crag. A ghostly call draws creatures from miles around. ", 
                 hiddenFeature: "Warrens of tunnels and tombs below the keep hold the remains (and spirits) of the Pallid Knights. ", 
             },
-            {col:4, row:5, id:"hex4.5", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Colossal weatherworn granite spires rise from domed hills. ", 
-                obviousFeature: "Even on clear days, lightning arcs between the spires, strikes metal objects carried between them. ", 
-                hiddenFeature: "Researcher wagon caravan lurks, taking notes and sending test subjects into the spire fields.  ", 
-            },
-            {col:4, row:6, id:"hex4.6", faction:"Researchers", landform:"Badlands", 
-                terrainFeature: "Flared Mesas streaked green and purple. Paths of scorched terrain. ", 
-                obviousFeature: "Mines producing threads of purple glimmerglass ore. Researchers study, guarded by Protean deserters. ", 
-                hiddenFeature: "At midnight, a beam of coherent light from the sky tracks across the terrain, chasing moving targets. ", 
-            },
-            {col:4, row:7, id:"hex4.7", faction:"Neutral", landform:"Badlands", 
-                terrainFeature: "Lichen-marked jagged black stone. Circular salt pans, some flooded. ", 
-                obviousFeature: "Five stone spires. Pilgrim trail between them grants destructive power or tears aspirants apart. ", 
-                hiddenFeature: "Eel-like water spirit, contains entire ecosystem in its gills. Drowns travellers to feed flock. ", 
-            },
-            {col:4, row:8, id:"hex4.8", faction:"Protean Army", landform:"Wastes", 
-                terrainFeature: "Blasted stone plain, pockmarked with craters and twisting caverns. ", 
-                obviousFeature: "Warcamp of pustular, mutated knights clearing a stinking cave. Heavy on armaments, light on supplies. ", 
-                hiddenFeature: "An oasis island, surrounded by a moat of tar. Trees grow inedible fruit. Lake of deadly water. ", 
-            },
-            {col:4, row:9, id:"hex4.9", faction:"Protean Army", landform:"Wastes", 
-                terrainFeature: "Deep drifts of fist-sized white stones. White moths flit between gaps. ", 
-                obviousFeature: "Lost army of diseased knights, reduced to a few stragglers. Refuse to be lead out of the desert. ", 
-                hiddenFeature: "Burned remains of luxuries, cast aside to aid progress. Gold scraps, book fragments, scorched silk. ", 
-            },
-            {col:4, row:10, id:"hex4.10", faction:"Researchers", landform:"Wastes", 
-                terrainFeature: "Low clay mounds writhing with malformed half-buried golems. ", 
-                obviousFeature: "At the centre of the mounds, a rickety observation tower guarded by patchwork golems. ", 
-                hiddenFeature: "Bunker beneath the tower is filled with golem-steering whistles, maps of the region. ", 
-            },
             {col:5, row:1, id:"hex5.1", faction:"Neutral", landform:"Badlands", 
                 terrainFeature: "Huge strip mine canyon. Stepped sides, heaps of spoil, fallen cables. ", 
                 obviousFeature: "Cracked titan bones at the mine’s floor, leaking regenerating marrow from churning extraction plants. ", 
@@ -268,188 +164,6 @@ This file is completely standalone, so you can just save itas a .html and edit i
                 terrainFeature: "Calderas of geothermally heated water form steep cascades. ", 
                 obviousFeature: "Weathered stone monastery. Monks offer hospitality but slay those who find the tower. ", 
                 hiddenFeature: "Beyond the path from the monastery, a tower of alien metal, infinitely tall. Unseen from a distance. ", 
-            },
-            {col:5, row:5, id:"hex5.5", faction:"Kalawi Tribe", landform:"Badlands", 
-                terrainFeature: "Sandstorms whirling against stark pillars create ceaseless noise. ", 
-                obviousFeature: "Wind and sand rushing through the World-Etch creates erodes transitory petroglyph prophecies. ", 
-                hiddenFeature: "The Tai-Asal of the Yawaal, ritutal kritarchs of the tribe. They speak only the hand-language of judges.  ", 
-            },
-            {col:5, row:6, id:"hex5.6", faction:"Neutral", landform:"Badlands", 
-                terrainFeature: "Massive lonely flat-topped stone dominates landscape. ", 
-                obviousFeature: "Stargazer Rock juts up from surrounding boulders. Stars are wrong when viewed from atop rock. ", 
-                hiddenFeature: "Cave’s walls inside of Stargazer Rock depict dozens of unfamiliar star charts and constellations. ", 
-            },
-            {col:5, row:7, id:"hex5.7", faction:"Pallid Knights", landform:"Badlands", 
-                terrainFeature: "Empyrean heights cut by river canyons. Cerulean alpine lake. ", 
-                obviousFeature: "The Lament of Joscail, a stone that watches over dead Knights, their hollow armour frozen mid-fight. ", 
-                hiddenFeature: "Lair of the Lindwyrm. Liquid hydrogen breath, covetous dreams, loathing of the quick and the bright. ", 
-            },
-            {col:5, row:8, id:"hex5.8", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Trench-lined scorched hillsides, craters turned into strongpoints. ", 
-                obviousFeature: "Rust Monastery empty but miraculously intact. Gearwheel guesthouse respected as neutral ground. ", 
-                hiddenFeature: "Fortifications and dry aqueducts follow and disrupt ley lines, twisting magical power in the region. ", 
-            },
-            {col:5, row:9, id:"hex5.9", faction:"Researchers", landform:"Badlands", 
-                terrainFeature: "Small creek nestled between crater-marked hills. ", 
-                obviousFeature: "Abandoned researcher base. Wurm cult markings on the walls. Astrology notes for stars in 5.6. ", 
-                hiddenFeature: "Locked bunker-library contains speculative notes on wurm control via astrology. ", 
-            },
-            {col:5, row:10, id:"hex5.10", faction:"Pallid Knights", landform:"Wastes", 
-                terrainFeature: "Chest-high silver grass. Burnt battle sites. Pools of psychic goo. ", 
-                obviousFeature: "Pallid reinforcements on their way to 5.8, burdened with spoils and prisoners from Proteans driven to 4.9. ", 
-                hiddenFeature: "Knights fading from being away from their stronghold for too long. Need a swift messenger to 2.4.  ", 
-            },
-            {col:6, row:1, id:"hex6.1", faction:"Neutral", landform:"Wastes", 
-                terrainFeature: "Dried salt lakebed. Skeletal fish, boats with lightning-blasted masts. ", 
-                obviousFeature: "The Last Tavern, serves only water. Anyone who draws blood within its boundary stones is desiccated. ", 
-                hiddenFeature: "Geode-temple of salt spirits, bound in chains of bone and wood, in the deep cellars of the Last Tavern. ", 
-            },
-            {col:6, row:2, id:"hex6.2", faction:"Neutral", landform:"Badlands", 
-                terrainFeature: "Fissues, constant earthquakes, sparse scrub, and slothful animals. ", 
-                obviousFeature: "Floating city-state of Geodesia, ruled by iron-fisted immortal sorcerer-queen Ica. Major trade centre. ", 
-                hiddenFeature: "Fissure filled with solidified souls of political dissidents in gem form. Guarded by lesser criminals. ", 
-                symbol: "🏛️",
-            },
-            {col:6, row:3, id:"hex6.3", faction:"Rust Monks", landform:"Wastes", 
-                terrainFeature: "Pits of bubbling tar. Heat- distorted petrified trees.  ", 
-                obviousFeature: "Mounds of moaning, rusted swords. Monks ritually bind slain souls to the blades that slew them. ", 
-                hiddenFeature: "Wurm-cultist shrine in copse of red cacti. Desiccated worm eyes. Eye-shapes carved into shrine. ", 
-            },
-            {col:6, row:4, id:"hex6.4", faction:"Researchers", landform:"Wastes", 
-                terrainFeature: "Magically radioactive glowing blue dust dunes, freezing gales. ", 
-                obviousFeature: "Tents around crater, contains sizzling meteorite. Researchers wear thick yellow rubber suits. ", 
-                hiddenFeature: "Series of covered sinkholes kept clear of dust, hiding underground mutant village of Sheol. ", 
-            },
-            {col:6, row:5, id:"hex6.5", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Impossibly high cliffs of orange stone. Sheer drops, treacherous footholds. ", 
-                obviousFeature: "The safe paths twine between vast pillars scored over centuries by the singing winds. ", 
-                hiddenFeature: "One of the pillars floats, suspended by wind alone. A monumental shrine to hidden elementals.  ", 
-            },
-            {col:6, row:6, id:"hex6.6", faction:"Rust Monks", landform:"Barren Fells", 
-                terrainFeature: "Volcanic and meteoric craters. Hard to differentiate. ", 
-                obviousFeature: "Monks tending gardens of rust bonsai sprouting from meteorites. Trimmed with diamond saws. ", 
-                hiddenFeature: "One meteorite grows strange trees. Is actually an egg, may hatch into a void-creature if heated. ", 
-            },
-            {col:6, row:7, id:"hex6.7", faction:"Neutral", landform:"Barren Fells", 
-                terrainFeature: "Ancient mountains worn down to broken mounds above treeline. ", 
-                obviousFeature: "Cerulean lake, ringed by mire. Tumbled towers on a rocky island. Strange lights when the moon is hidden. ", 
-                hiddenFeature: "Silver wires draped atop highest fell lead to opening hewn in bedrock. Sets teeth humming upon entry. ", 
-            },
-            {col:6, row:8, id:"hex6.8", faction:"Pallid Knights", landform:"Bluffs", 
-                terrainFeature: "Soft boluses of granite, like a rising wave of bubbles. ", 
-                obviousFeature: "The Blessed Archway. Silver gate, rows of devotional offerings. Anything crossing the arch dies painlessly. ", 
-                hiddenFeature: "Tabernacle of penitent vultures, made wise and solemn through cumulative brain-feasts. ", 
-            },
-            {col:6, row:9, id:"hex6.9", faction:"Neutral", landform:"Badlands", 
-                terrainFeature: "Jagged obsidian spikes erupt from the ground in clusters. ", 
-                obviousFeature: "Huge spire of living amethyst. Moves slowly, attempts to absorb and desiccate all plant life. ", 
-                hiddenFeature: "Sentient wizard skull encased in crystal. Rest of bones in amethyst spire, once the wizard’s body. ", 
-            },
-            {col:6, row:10, id:"hex6.10", faction:"Neutral", landform:"Wastes", 
-                terrainFeature: "Geysers, bubbling mud pits, sulphur flats. Yellow-brown reeds. ", 
-                obviousFeature: "Destroyed geothermal reclamation dome. Hissing pipes, tanks of rainwater, mysterious gears. ", 
-                hiddenFeature: "Muck Wurm lair with a clutch of tungsten-enriched eggs. Breathes fire, water, air, and earth. ", 
-            },
-            {col:7, row:1, id:"hex7.1", faction:"Rust Monks", landform:"Badlands", 
-                terrainFeature: "LINE LINE ", 
-                obviousFeature: "Latticework pillars with support wires. Each holds a single Rust Monk, eyes trained upwards. ", 
-                hiddenFeature: "One Rust Monk has transcended, walks clad in mercury. Speaks in maddening riddles, shrieking. ", 
-            },
-            {col:7, row:2, id:"hex7.2", faction:"Rust Monks", landform:"Savannah", 
-                terrainFeature: "Rolling hills dotted with tangled patches of brambles. ", 
-                obviousFeature: "A ragged sinkhole filled with turquoise water, tainted by mineral deposits below. Monk’s hut at edge. ", 
-                hiddenFeature: "Pasture of obsidian antelope nestled in a low valley. Crooked sickle brand on their flanks. ", 
-            },
-            {col:7, row:3, id:"hex7.3", faction:"Neutral", landform:"Savannah", 
-                terrainFeature: "Folds of grassland punctuated by bursts of red-orange trees and tall grass. ", 
-                obviousFeature: "Gigantic tuber-like tree with jade green leaves. Headless birds with eye-necks nest in the upper reaches. ", 
-                hiddenFeature: "Rhinoceros graveyard. Deep trenches, just the horns or backs protruding. ", 
-            },
-            {col:7, row:4, id:"hex7.4", faction:"Rust Monks", landform:"Savannah", 
-                terrainFeature: "Sage-coloured plane, studded with regular rows of crusted tumuli. ", 
-                obviousFeature: "Smallholdings worked by lay sisters of the Rust Monks. They have plenty of fowls but lack cloth. ", 
-                hiddenFeature: "The burned husk of an Aether refinery, now used by indolent ethanol distillers. ", 
-            },
-            {col:7, row:5, id:"hex7.5", faction:"Kalawi Tribe", landform:"Wastes", 
-                terrainFeature: "Smoky glass brambles growing steadily. Glass dust chokes the air. ", 
-                obviousFeature: "Toppled tower of clear glass, shattered. Called “the Smokestack”, though no one remembers why. ", 
-                hiddenFeature: "Cave oasis with clean water and mushrooms. Entrance has a glass charm of protection.  ", 
-            },
-            {col:7, row:6, id:"hex7.6", faction:"Neutral", landform:"Bluffs", 
-                terrainFeature: "Octagonal stumps of tiered basalt with drifts of gravel and sand. ", 
-                obviousFeature: "Spawning pit of crystal starfish. Musical, valuable, and soaked in neurotoxins and hallucinogens. ", 
-                hiddenFeature: "Failed psychic war elephant initiate lair, full of bitter thoughts and fevered dreams. ", 
-            },
-            {col:7, row:7, id:"hex7.7", faction:"Researchers", landform:"Bluffs", 
-                terrainFeature: "Cracked shallow valleys like the creases of a mummified hand. ", 
-                obviousFeature: "Fortified town of Seraph. Empty gun-port towers, tar-coated streets, battered peacekeeper golems. ", 
-                hiddenFeature: "Invisible, cautious Researchers monitor the populace and visitors, testing, altering, and extracting. ", 
-                symbol: "🏰",
-            },
-            {col:7, row:8, id:"hex7.8", faction:"Pallid Knights", landform:"Barren Fells", 
-                terrainFeature: "Tilted chalky moor, studded with skeletal projections. ", 
-                obviousFeature: "Painted limestone tors with low footbridges, rickety and switchbacked, over the bog. ", 
-                hiddenFeature: "A ramshackle quarry where Pallid Knights excavate boy mummies, some already awake. ", 
-            },
-            {col:7, row:9, id:"hex7.9", faction:"Kalawi Tribe", landform:"Badlands", 
-                terrainFeature: "Scarred, arid, flat lands rising into jagged cliffs. ", 
-                obviousFeature: "Village of gourd farmers living beneath a rock face speckled with casket-caves and hanging coffins. ", 
-                hiddenFeature: "The village’s ground-level pet cemetery is littered with piles of dirt and empty graves. ", 
-            },
-            {col:7, row:10, id:"hex7.10", faction:"Protean Army", landform:"Wastes", 
-                terrainFeature: "Black igneous rock with upland ridges of quartz. ", 
-                obviousFeature: "Pit of liquidifed, diseased flesh, trying to reform into distinct soldiers. Protean warning-marks. ", 
-                hiddenFeature: "Hot springs, waters full of minerals and diluted ghosts. Can induce lethargy, healing, flesh-change. ", 
-            },
-            {col:8, row:1, id:"hex8.1", faction:"Pallid Knights", landform:"Badlands", 
-                terrainFeature: "Lone and level sands. Extreme temperature swings. No landmarks. ", 
-                obviousFeature: "Corpses in red or white maille litter the sand. Their bronze swords are valuable, still sharp, possibly haunted. ", 
-                hiddenFeature: "Pallid warcamp, only at night. Will soon raid the “Amorites” in 8.2. Never will, and there are no Amorites. ", 
-            },
-            {col:8, row:2, id:"hex8.2", faction:"Rust Monks", landform:"Savannah", 
-                terrainFeature: "Gorse-tangled hills, scattered with animal bones and olive-coloured trees. ", 
-                obviousFeature: "Monks in pedal-powered stilt-walkers, grinding bones to gravel under iron hooves. Guided by flares. ", 
-                hiddenFeature: "Paths form an intricate maze. Walking them correctly leads to a greatwurm’s lair. ", 
-            },
-            {col:8, row:3, id:"hex8.3", faction:"Neutral", landform:"Savannah", 
-                terrainFeature: "Windswept grass plains with shallow bowls and matching hills. ", 
-                obviousFeature: "Massive fractal-etched monoliths of smooth white or black stone, hovering, slowly spinning in the air. ", 
-                hiddenFeature: "The monoliths contain mazes of cell-like tombs or cells, all empty, all lit by flickering yellow lights. ", 
-            },
-            {col:8, row:4, id:"hex8.4", faction:"Kalawi Tribe", landform:"Badlands", 
-                terrainFeature: "Sandy, rocky. Few plants. Sacred stone pipes jut from the ground. ", 
-                obviousFeature: "Swept crossroads, allowing easy travel for a few hours. Travellers leave stone marker heaps. ", 
-                hiddenFeature: "Giant flag-draped pipes descend at steep angles. Used for Kalawi initiation rituals. ", 
-            },
-            {col:8, row:5, id:"hex8.5", faction:"Researchers", landform:"Badlands", 
-                terrainFeature: "Sandstone spires encrusted with calcium salts and lumps of quartz.  ", 
-                obviousFeature: "Dying or molting wire- wurm, a building-sized tangle of thick  cables and nodules, wanders and drifts. ", 
-                hiddenFeature: "Small researcher team and auto-wagon follow the creature from a safe distance.  ", 
-            },
-            {col:8, row:6, id:"hex8.6", faction:"Researchers", landform:"Bluffs", 
-                terrainFeature: "Small pools of sour water, crumbly shale overhangs, narrow gullies. ", 
-                obviousFeature: "Metallic outcrops in the shape of fossil sea life, surrounded by small glowing lights and a smell of salt. ", 
-                hiddenFeature: "Researchers camped around a vast ammonite fossil they are studying. Their numbers seem diminished. ", 
-            },
-            {col:8, row:7, id:"hex8.7", faction:"Researchers", landform:"Bluffs", 
-                terrainFeature: "Chalky slopes, dotted with nodules of grey slag and porous stone.  ", 
-                obviousFeature: "Researcher sampling- caravans, gathering, trading, carving deep  tracks into the soil. ", 
-                hiddenFeature: "Dissection oubliettes. Could be repurposed for healing or unnatural modifications. ", 
-            },
-            {col:8, row:8, id:"hex8.8", faction:"Neutral", landform:"Barren Fells", 
-                terrainFeature: "Cracked night sky, pouring red starlight. Frigid cold, deep snow. ", 
-                obviousFeature: "Pallid Knight citadel mounting desperate defense against waves of Protean soldiers. No clear victor. ", 
-                hiddenFeature: "On a mountain summit, a steel seed, oblong in shape, the size of a person. Sprouting roots into the rock. ", 
-            },
-            {col:8, row:9, id:"hex8.9", faction:"Neutral", landform:"Badlands", 
-                terrainFeature: "Lilac coloured desert with oases of green crystal formations. ", 
-                obviousFeature: "Giant crimson crane flies flitting from crystal to crystal, feeding on them via a huge proboscis. ", 
-                hiddenFeature: "Team of hunters seeking fly larvae, which is considered a delicacy by the Kalawi Tribe. ", 
-            },
-            {col:8, row:10, id:"hex8.10", faction:"Protean Army", landform:"Badlands", 
-                terrainFeature: "Dry riverbeds, multicoloured canyons, fossils in the walls. ", 
-                obviousFeature: "Protean encampment full of wounded soldiers. Fog-shrouded mutant chirurgeons graft better limbs. ", 
-                hiddenFeature: "Murdered messenger, bag full of maps and vital commands. A trick, a traitor, or a tragic accident?  ", 
             },
         ],
         encounters: {
@@ -908,8 +622,9 @@ This file is completely standalone, so you can just save itas a .html and edit i
     //define the parameters for the hex map.
     var numColumns = hexMap.numColumns;
     var numRows = hexMap.numRows;
-    var hexOuterRadius = 50; 
+    var hexOuterRadius = 40; 
     var hexInnerRadius = hexOuterRadius * Math.sqrt(3)/2; 
+    var marginSize = hexOuterRadius / 5;
     
     //calculate internal dimensions of map, assuming hexes are oriented with flat side on top.
     var totalWidth = hexOuterRadius * (numColumns*1.5 + 0.5); 
@@ -919,8 +634,8 @@ This file is completely standalone, so you can just save itas a .html and edit i
     var canvas = document.getElementById("hexCanvas");
     //scale the svg height to the window height. I dunno. I think it looks nice that way. Will probably look turbo janky on mobile. Note the body {margin: 0;} up top that makes this work.
     //canvas.setAttribute("height", window.innerHeight);
-    //Fiddle with the interior dimensions of the svg to make it the right size for the hex grid. 1 unit margin around the edges
-    document.getElementById("mysvg").setAttribute("viewBox", "-1 -1 " + (totalWidth+2) + " " + (totalheight+2));
+    //Fiddle with the interior dimensions of the svg to make it the right size for the hex grid. margin around the edges
+    document.getElementById("mysvg").setAttribute("viewBox", "-"+marginSize+" -"+marginSize+" " + (totalWidth+2*marginSize) + " " + (totalheight+2*marginSize));
 
     //------------------------------------
     // Functions for building the map
@@ -964,8 +679,14 @@ This file is completely standalone, so you can just save itas a .html and edit i
             stroke="STROKEPLACEHOLDER" stroke-opacity="0" stroke-width="0.3">
                 TEXTPLACEHOLDER
             </text>`;
-        svgText = svgText.replace("XPLACEHOLDER",x);
+        var svgText = `<foreignObject x="XPLACEHOLDER" y="YPLACEHOLDER" width="WIDTHPLACEHOLDER" height="9999">
+                <div style="color: FILLPLACEHOLDER; text-align:center; padding:0; font-family: sans-serif; font-size:FONTSIZEPLACEHOLDERpx; font-weight:bold;">
+                    TEXTPLACEHOLDER
+                </div>
+            </foreignObject>`;
+        svgText = svgText.replace("XPLACEHOLDER",x-hexInnerRadius);
         svgText = svgText.replace("YPLACEHOLDER",y);
+        svgText = svgText.replace("WIDTHPLACEHOLDER",hexInnerRadius*2);
         svgText = svgText.replace("FILLPLACEHOLDER",fill);
         svgText = svgText.replace("STROKEPLACEHOLDER",stroke);
         svgText = svgText.replace("FONTSIZEPLACEHOLDER",h);
@@ -982,8 +703,8 @@ This file is completely standalone, so you can just save itas a .html and edit i
         //We need to group it so that we can respond to clicks on the enter thing
         svgGroup = `<g id="`+hex.id+`" onClick="clickHex(this.id)">`
         svgGroup += createHexagon(hexX,hexY,hexOuterRadius,hexMap.landformColors[hex.landform],"black", hex.id);
-        svgGroup += createText(hexX,hexY,hexOuterRadius*0.6,hexMap.factionColors[hex.faction], "black", hex.col+"."+hex.row);
-        svgGroup += createText(hexX,hexY+hexInnerRadius*0.4,hexOuterRadius*0.2,hexMap.factionColors[hex.faction], "none", hex.faction);
+        svgGroup += createText(hexX,hexY-hexInnerRadius*0.4,hexOuterRadius*0.6,hexMap.factionColors[hex.faction], "black", hex.col+"."+hex.row);
+        svgGroup += createText(hexX,hexY+hexInnerRadius*0.3,hexOuterRadius*0.2,hexMap.factionColors[hex.faction], "none", hex.faction);
         if (hex.symbol){
             svgGroup += createText(hexX,hexY-hexInnerRadius*0.6,hexOuterRadius*0.3,hexMap.factionColors[hex.faction], "none", hex.symbol);
         }
@@ -1039,6 +760,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
         encounterdraw = rD(hexMap.encounters[hex.landform]);
         textContent = textContent.replace("OMENPLACEHOLDER",encounterdraw.omen);
         textContent = textContent.replace("ENCOUNTERPLACEHOLDER",encounterdraw.event);
+
         textHolder.innerHTML = textContent;
 
         //this adds a little outline to the most recently clicked hex.
