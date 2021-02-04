@@ -912,7 +912,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
     var hexInnerRadius = hexOuterRadius * Math.sqrt(3)/2; 
     
     //calculate internal dimensions of map, assuming hexes are oriented with flat side on top.
-    var totalWidth = hexOuterRadius * (numColumns + Math.ceil(numColumns/2) + 0.5); 
+    var totalWidth = hexOuterRadius * (numColumns*1.5 + 0.5); 
     var totalheight = hexInnerRadius * (2 * numRows + 1);
 
     //set up the svg to use as a canvas
