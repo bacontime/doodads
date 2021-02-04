@@ -910,6 +910,7 @@ This file is completely standalone, so you can just save itas a .html and edit i
     var numRows = hexMap.numRows;
     var hexOuterRadius = 50; 
     var hexInnerRadius = hexOuterRadius * Math.sqrt(3)/2; 
+    var marginSize = hexOuterRadius / 5;
     
     //calculate internal dimensions of map, assuming hexes are oriented with flat side on top.
     var totalWidth = hexOuterRadius * (numColumns*1.5 + 0.5); 
@@ -919,8 +920,8 @@ This file is completely standalone, so you can just save itas a .html and edit i
     var canvas = document.getElementById("hexCanvas");
     //scale the svg height to the window height. I dunno. I think it looks nice that way. Will probably look turbo janky on mobile. Note the body {margin: 0;} up top that makes this work.
     //canvas.setAttribute("height", window.innerHeight);
-    //Fiddle with the interior dimensions of the svg to make it the right size for the hex grid. 1 unit margin around the edges
-    document.getElementById("mysvg").setAttribute("viewBox", "-1 -1 " + (totalWidth+2) + " " + (totalheight+2));
+    //Fiddle with the interior dimensions of the svg to make it the right size for the hex grid. margin around the edges
+    document.getElementById("mysvg").setAttribute("viewBox", "-"+marginSize+" -"+marginSize+" " + (totalWidth+2*marginSize) + " " + (totalheight+2*marginSize));
 
     //------------------------------------
     // Functions for building the map
