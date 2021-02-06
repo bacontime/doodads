@@ -5,7 +5,9 @@
     dt {font-weight: bold;}    dl,dd {font-size: .9rem;}    dd {margin-bottom: 1em;}
     main{display:flex; flex-wrap: wrap;}
     svg {background-color:#F002; flex: 2 200px; }
-    div {padding:1rem; flex: 3 20rem; min-height: 120vh;}
+    main > div {padding:1rem; flex: 3 20rem; min-height: 120vh;}
+    /*g:hover > polygon{fill: yellow;}*/
+}
 </style>
 <!--This is a webpage implementation of the Massive Community Hexcrawl, orchestrated by Skerples.CC BY-NC-SA 4.0, etc.
 You can find the original files here: https://coinsandscrolls.blogspot.com/2021/01/osr-massive-community-hexcrawl-complete.html
@@ -27,7 +29,10 @@ Notes to self:
     Can't easily get to unripe fruit. But can hitch a ride into candyland via fruitfalls.
     "Beebarians" is very funny but doesn't quite fit what I have in mind for peaceful diplomat beefolk.
     An archway of peanut brittle on the other side of the pastry plane.
+    Mousse in the meat plane?
+    Undertreacle
 </pre>
+<!--https://coinsandscrolls.blogspot.com/2018/02/osr-horrible-magical-candyland.html-->
 
 <script>
     //✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
@@ -56,9 +61,9 @@ Notes to self:
         },
         hexes: [
             {col:1, row:1, id:"hex1.1", faction:"Bubblegum Dynasty", landform:"Syrup Swamp", 
-                terrainFeature: "xxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooeeeee", 
-                obviousFeature: "xxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooeeeeeee", 
-                hiddenFeature: "xxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooxxxxxxxxxxooooooooooeeeeeee", 
+                terrainFeature: "Salty taffy reefs under seas the color of wine.", 
+                obviousFeature: "", 
+                hiddenFeature: "", 
             },
             {col:1, row:2, id:"hex1.2", faction:"Bubblegum Dynasty", landform:"Syrup Swamp", 
                 terrainFeature: "Crystals clinging to the rough shores of a sea of sickly sweet liquor.", 
@@ -67,7 +72,7 @@ Notes to self:
                 symbol: "🌀",
             },
             {col:1, row:3, id:"hex1.3", faction:"Bubblegum Dynasty", landform:"Frosty Forest", 
-                terrainFeature: "", 
+                terrainFeature: "Ferociously Frigid Forest. Popsicle pillars and fudgesicle firs.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
@@ -77,12 +82,12 @@ Notes to self:
                 hiddenFeature: "", 
             },
             {col:2, row:1, id:"hex2.1", faction:"Bubblegum Dynasty", landform:"Sweet Steppe", 
-                terrainFeature: "", 
+                terrainFeature: "Sticky streams swirling together amidst gumball gravel.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
             {col:2, row:2, id:"hex2.2", faction:"Bubblegum Dynasty", landform:"Sweet Steppe", 
-                terrainFeature: "", 
+                terrainFeature: "Sedate, meandering rivers of juice and honey.", 
                 obviousFeature: "Royal Capital of the Bubblegum Dynasty. A bustling city surrounded by thick sugarcube walls.", 
                 hiddenFeature: "If you know the right people and pay a steep price, royal artificers can open a portal to practically any plane.", 
                 symbol:"🏰",
@@ -93,17 +98,17 @@ Notes to self:
                 hiddenFeature: "", 
             },
             {col:2, row:4, id:"hex2.4", faction:"Antlings", landform:"Amorphous Mountains", 
-                terrainFeature: "", 
+                terrainFeature: "Glaciers of jelly flowing through chocolate and marshmallow peaks.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
             {col:3, row:1, id:"hex3.1", faction:"Bubblegum Dynasty", landform:"Sweet Steppe", 
-                terrainFeature: "", 
+                terrainFeature: "Flat fields of frosting spattered with sprinkles.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
             {col:3, row:2, id:"hex3.2", faction:"Beefolk", landform:"Sweet Steppe", 
-                terrainFeature: "Organic urban sprawl interspersed with vast open flower fields.", 
+                terrainFeature: "Organic urban sprawl interspersed with fondant flower fields.", 
                 obviousFeature: "Towering embassy-hive-city, nearly a mile high. Swarming with commerce. Inhabitants from across the multiverse.", 
                 hiddenFeature: "", 
             },
@@ -119,7 +124,7 @@ Notes to self:
                 symbol:"🌀",
             },
             {col:4, row:1, id:"hex4.1", faction:"Bubblegum Dynasty", landform:"Frosty Forest", 
-                terrainFeature: "", 
+                terrainFeature: "A forest of cream-filled croissants jutting skyward.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
@@ -129,7 +134,7 @@ Notes to self:
                 hiddenFeature: "", 
             },
             {col:4, row:3, id:"hex4.3", faction:"Antlings", landform:"Sweet Steppe", 
-                terrainFeature: "", 
+                terrainFeature: "Highland licorice praries grazed by bulbous candy bison", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
@@ -139,13 +144,13 @@ Notes to self:
                 hiddenFeature: "", 
             },
             {col:5, row:1, id:"hex5.1", faction:"Bubblegum Dynasty", landform:"Frosty Forest", 
-                terrainFeature: "A forest of cream-filled croissants jutting skyward.", 
+                terrainFeature: "Donut forest. Bearclaw bushes. Everything coated in glaze.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
                 symbol:"🌀",
             },
             {col:5, row:2, id:"hex5.2", faction:"Bubblegum Dynasty", landform:"Frosty Forest", 
-                terrainFeature: "", 
+                terrainFeature: "Ice cream canopies atop sugary trunks. Watch out for falling frosty.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
@@ -163,23 +168,23 @@ Notes to self:
         ],
         borderHexes: [
             {col:1, row:0,  landform:"Syrup Swamp", },
-            {col:2, row:0,  landform:"Syrup Swamp", },
-            {col:3, row:0,  landform:"Syrup Swamp", },
+            {col:2, row:0,  landform:"Sweet Steppe", },
+            {col:3, row:0,  landform:"Sweet Steppe", },
             {col:4, row:0,  landform:"Frosty Forest", },
             {col:5, row:0,  landform:"Frosty Forest", },
 
-            {col:1, row:5,  landform:"Syrup Swamp", },
-            {col:2, row:5,  landform:"Syrup Swamp", },
+            {col:1, row:5,  landform:"Amorphous Mountains", },
+            {col:2, row:5,  landform:"Sweet Steppe", },
             {col:3, row:5,  landform:"Amorphous Mountains", },
             {col:4, row:5,  landform:"Frosty Forest", },
             {col:5, row:5,  landform:"Frosty Forest", },
 
-            {col:0, row:0,  landform:"Frosty Forest", },
-            {col:0, row:1,  landform:"Frosty Forest", },
+            {col:0, row:0,  landform:"Syrup Swamp", },
+            {col:0, row:1,  landform:"Syrup Swamp", },
             {col:0, row:2,  landform:"Frosty Forest", },
             {col:0, row:3,  landform:"Frosty Forest", },
-            {col:0, row:4,  landform:"Amorphous Mountains", },
-            {col:0, row:5,  landform:"Frosty Forest", },
+            {col:0, row:4,  landform:"Sweet Steppe", },
+            {col:0, row:5,  landform:"Amorphous Mountains", },
 
             {col:6, row:0,  landform:"Frosty Forest", },
             {col:6, row:1,  landform:"Frosty Forest", },
@@ -315,12 +320,13 @@ Notes to self:
             stroke="STROKEPLACEHOLDER" stroke-opacity="0" stroke-width="0.3">
                 TEXTPLACEHOLDER
             </text>`;
-        var svgText = `<foreignObject x="XPLACEHOLDER" y="YPLACEHOLDER" width="WIDTHPLACEHOLDER" height="20">
+        var svgText = `<foreignObject x="XPLACEHOLDER" y="YPLACEHOLDER" width="WIDTHPLACEHOLDER" height="0" style="overflow:visible;">
                 <div style="color: FILLPLACEHOLDER; text-align:center; padding:0; font-family: sans-serif; font-size:FONTSIZEPLACEHOLDERpx; font-weight:bold;">
                     TEXTPLACEHOLDER
                 </div>
             </foreignObject>`;
         svgText = svgText.replace("XPLACEHOLDER",x-hexInnerRadius);
+        //svgText = svgText.replace("XPLACEHOLDER",x);
         svgText = svgText.replace("YPLACEHOLDER",y);
         svgText = svgText.replace("WIDTHPLACEHOLDER",hexInnerRadius*2);
         svgText = svgText.replace("FILLPLACEHOLDER",fill);
@@ -337,7 +343,7 @@ Notes to self:
         hexY = hexInnerRadius * (2 * hex.row - hex.col % 2);
         //now do some syntax shenanigans to build a group with background, coordinate text, and faction text, etc.
         //We need to group it so that we can respond to clicks on the enter thing
-        svgGroup = `<g id="`+hex.id+`" onClick="clickHex(this.id)">`
+        svgGroup = `<g id="`+hex.id+`" onClick="clickHex(this.id)" style="cursor:pointer">`
         svgGroup += createHexagon(hexX,hexY,hexOuterRadius,hexMap.landformColors[hex.landform],"black", hex.id);
         svgGroup += createText(hexX,hexY-hexInnerRadius*0.4,hexOuterRadius*0.6,hexMap.factionColors[hex.faction], "black", hex.col+"."+hex.row);
         svgGroup += createText(hexX,hexY+hexInnerRadius*0.3,hexOuterRadius*0.2,hexMap.factionColors[hex.faction], "none", hex.faction);
@@ -355,7 +361,7 @@ Notes to self:
         hexY = hexInnerRadius * (2 * hex.row - hex.col % 2);
         //now draw a blank hex
         svgGroup = `<g>`
-        svgGroup += createHexagon(hexX,hexY,hexOuterRadius,hexMap.landformColors[hex.landform],"#0000", hex.id);
+        svgGroup += createHexagon(hexX,hexY,hexOuterRadius*1.01,hexMap.landformColors[hex.landform],"#0000", hex.id);
         svgGroup += `</g>`;
         return svgGroup;
     }
