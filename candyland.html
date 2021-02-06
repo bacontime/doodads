@@ -31,6 +31,8 @@ Notes to self:
     An archway of peanut brittle on the other side of the pastry plane.
     Mousse in the meat plane?
     Undertreacle
+    "Sticky streams swirling together amidst"
+    "sea of crabs"
 </pre>
 <!--https://coinsandscrolls.blogspot.com/2018/02/osr-horrible-magical-candyland.html-->
 
@@ -61,7 +63,7 @@ Notes to self:
         },
         hexes: [
             {col:1, row:1, id:"hex1.1", faction:"Bubblegum Dynasty", landform:"Syrup Swamp", 
-                terrainFeature: "Salty taffy reefs under seas the color of wine.", 
+                terrainFeature: "Salty taffy reefs under sticky seas the color of wine.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
@@ -79,10 +81,10 @@ Notes to self:
             {col:1, row:4, id:"hex1.4", faction:"Beefolk", landform:"Amorphous Mountains", 
                 terrainFeature: "Gently rolling mounds of fudge.", 
                 obviousFeature: "", 
-                hiddenFeature: "", 
+                hiddenFeature: "Beepriests maintain waxen barriers blockading entrances to the undertreacle, fight to keep candy demons contained.", 
             },
             {col:2, row:1, id:"hex2.1", faction:"Bubblegum Dynasty", landform:"Sweet Steppe", 
-                terrainFeature: "Sticky streams swirling together amidst gumball gravel.", 
+                terrainFeature: "Gumball gravel and sprinkle sand.", 
                 obviousFeature: "", 
                 hiddenFeature: "", 
             },
@@ -135,7 +137,7 @@ Notes to self:
             },
             {col:4, row:3, id:"hex4.3", faction:"Antlings", landform:"Sweet Steppe", 
                 terrainFeature: "Highland licorice praries grazed by bulbous candy bison", 
-                obviousFeature: "", 
+                obviousFeature: "Antling farmers tending to the herds and tearing down abandoned gumpeople dwellings.", 
                 hiddenFeature: "", 
             },
             {col:4, row:4, id:"hex4.4", faction:"Antlings", landform:"Amorphous Mountains", 
@@ -214,44 +216,91 @@ Notes to self:
             ],
             "Sweet Steppe": [
                 {
+                    omen:"The wind suddenly stops. You smell citrus.",
+                    event:"A fruit-fall occurs. Plump fruits fall from the sky and splatter on the ground. The aftermath is an opportunity to collect water.",
+                },
+                {
+                    omen:"",
+                    event:"",
+                },
+                {
+                    omen:"",
+                    event:"",
+                },
+                {
+                    omen:"",
+                    event:"",
+                },
+                {
+                    omen:"",
+                    event:"",
+                },
+                {
                     omen:"",
                     event:"",
                 },
             ],
-        }
+        },
+        weather: {
+            level:4,
+            types: [
+                {
+                    name: "Clear", adjustment:"",
+                    description:"",
+                },
+                {
+                    name: "Clear", adjustment:"",
+                    description:"",
+                },
+                {
+                    name: "Ominous", adjustment:"",
+                    description:"",
+                },
+                {
+                    name: "Ominous", adjustment:"step",
+                    description:"",
+                },
+                {
+                    name: "Dangerous", adjustment:"",
+                    description:"",
+                },
+                {
+                    name: "Dangerous", adjustment:"step",
+                    description:"",
+                },
+                {
+                    name: "Ominous", adjustment:"",
+                    description:"",
+                },
+                {
+                    name: "Storm", adjustment:"step",
+                    description:"",
+                },
+                {
+                    name: "Storm", adjustment:"step",
+                    description:"",
+                },
+                {
+                    name: "Storm", adjustment:"step",
+                    description:"",
+                },
+                {
+                    name: "Storm", adjustment:"reset",
+                    description:"",
+                },
+                {
+                    name: "Storm", adjustment:"reset",
+                    description:"",
+                },
+                {
+                    name: "Fruit fall", adjustment:"",
+                    description:"The wind suddenly stops. You smell citrus. Plump fruits fall from the sky and splatter on the ground. Those without shelter take damage. The aftermath is an opportunity to collect water.",
+                },
+            ]
+        },
     }
     
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -405,6 +454,9 @@ Notes to self:
                             <dd>OMENPLACEHOLDER</dd>
                             <dt>Encounter:</dt>
                             <dd>ENCOUNTERPLACEHOLDER</dd>
+                            <hr>
+                            <dt>Weather:</dt>
+                            <dd><b>WEATHERNAMEPLACEHOLDER.</b> WEATHERDESCRIPTIONPLACEHOLDER</dd>
                         </dl>
                         `;
         textheader =  hex.col+"."+hex.row+" - "+hex.faction+" - "+hex.landform;
@@ -416,6 +468,15 @@ Notes to self:
         encounterdraw = rD(hexMap.encounters[hex.landform]);
         textContent = textContent.replace("OMENPLACEHOLDER",encounterdraw.omen);
         textContent = textContent.replace("ENCOUNTERPLACEHOLDER",encounterdraw.event);
+
+        //experimental implementation of https://crateredland.blogspot.com/2020/09/through-rain-or-sleet-or-swarm-of-bugs.html
+        weatherDraw = hexMap.weather.types[Math.floor(Math.random()*hexMap.weather.level)];
+        textContent = textContent.replace("WEATHERNAMEPLACEHOLDER",weatherDraw.name);
+        textContent = textContent.replace("WEATHERDESCRIPTIONPLACEHOLDER",weatherDraw.description);
+        //check the weather to see if we need to adjust
+        if (weatherDraw.adjustment == "step"){hexMap.weather.level += 2;}
+        if (hexMap.weather.level > 12){hexMap.weather.level = 12;}
+        if (weatherDraw.adjustment == "reset"){hexMap.weather.level = 4;}
 
         textHolder.innerHTML = textContent;
 
