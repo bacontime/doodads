@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Aerb Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+        integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+        integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+        crossorigin=""></script>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+    #map {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+</head>
+<body>
+
+<div id='map'></div>
+
+<script type="text/javascript">
+
+    const img = "url(aerbtile.png)";
+    const imgWidthPixels = 6000;
+    const imgHeightPixels = 3464;
+    const imgHexCenterPixel_x = imgWidthPixels/3;
+    const imgHexCenterPixel_y = imgHeightPixels/2;
+
+    const maxZoom = 4;
+    const tileWidth = 256;//default is 256
+
+    const mapMaxResolution = (3780*1000*20)/imgHeightPixels; // meters per pixel of most zoomed in image. 3780 is height of a triangle in km
+    const mapMinResolution = Math.pow(2, maxZoom) * mapMaxResolution;
+    const mapCenter_x = mapMaxResolution*imgHexCenterPixel_x
+    const mapCenter_y = mapMaxResolution*imgHexCenterPixel_y
+
+
+//---------------------------------------------------------------------------------------------------
+
+
+    //Create a CRS with overridden zoom and scale functions.
+    //This step would be unnecessary if mapMaxResolution were set to 1/imgHeightPixels,
+    //but then the scale at the bottom of the map would be inaccurate
+    var myCRS = L.CRS.Simple;
+    myCRS.scale = function(zoom){return Math.pow(2, zoom) / mapMinResolution;}; 
+    myCRS.zoom = function(scale){return Math.log(scale * mapMinResolution) / Math.LN2;};
+
+    var map = L.map('map', {
+        crs: myCRS,
+        center: [mapCenter_y, mapCenter_x],
+        zoom: 0,
+        minZoom: 0,
+        maxZoom: maxZoom,
+    });
+
+    L.control.scale().addTo(map); //Displays a little scale bar. Miles and kilometers.
+
+    // Extend GridLayer to create looping tiles.
+    //Examples: https://leafletjs.com/examples/extending/extending-2-layers.html#lgridlayer-and-dom-elements
+    L.GridLayer.LoopImage = L.GridLayer.extend({
+        createTile: function (coords, done) {
+            var tile = document.createElement('div');
+            var width = Math.pow(2, maxZoom - coords.z);
+
+            //Uncomment the following two lines to display the tile boundaries and coordinates
+            //tile.innerHTML = [coords.x, coords.y, coords.z,"<br>",width].join(', ');
+            //tile.style.outline = '1px solid blue';
+
+            tile.style.backgroundImage=img;
+            var offsetX = -coords.x*tileWidth;
+            var offsetY = -coords.y*tileWidth;
+            tile.style.backgroundPosition= offsetX.toString()+"px "+offsetY.toString()+"px";
+            tile.style.backgroundSize=(imgWidthPixels/width).toString()+"px";
+            //need asynchronous handling because it takes time to pull up the image
+            setTimeout(function () {
+                done(null, tile);	// Syntax is 'done(error, tile)'
+            }, 0);
+
+            return tile;
+        },
+    });
+
+    L.gridLayer.loopImage = function(opts) {return new L.GridLayer.LoopImage(opts);};
+
+    mapLayer = L.gridLayer.loopImage({
+        tileSize:tileWidth,
+        attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
+        }).addTo(map);
+
+
+//---------------------------------------------------------------------------------------------------
+
+
+    const AerbScaleFactor = mapMaxResolution*imgHeightPixels/2; //ratio between a unit in Aerbian coordinates and meters
+    function xy(xAerb,yAerb){ 
+        //convert Aerbian tricoordinate xy_ to map coordinate xy
+        xPos = mapCenter_x + AerbScaleFactor*(xAerb-yAerb)/Math.sqrt(3);
+        yPos = mapCenter_y + AerbScaleFactor*(xAerb+yAerb);
+        return [yPos,xPos]
+    }
+    
+    L.marker(xy(0,0)).addTo(map).bindPopup('0,0');
+    L.marker(xy(.1,0)).addTo(map).bindPopup('.1,0');
+    L.marker(xy(0,.1)).addTo(map).bindPopup('0,.1');
+    L.marker(xy(0,-.3)).addTo(map).bindPopup('0,-.3');
+
+
+</script>
+
+
+
+</body>
+</html>
+
+<!--
+Useful reference links
+https://leafletjs.com/examples/extending/extending-2-layers.html#lgridlayer-and-dom-elements
+https://gis.stackexchange.com/questions/200865/leaflet-crs-simple-custom-scale
+http://conanmap.mapvault.net/
+https://stackoverflow.com/questions/58297619/how-to-stretch-the-map-under-the-visible-area
+-->
