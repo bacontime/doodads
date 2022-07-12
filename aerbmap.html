@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,12 +31,12 @@
 <script type="text/javascript">
 
     const img = "url(aerbtile.png)";
-    const imgWidthPixels = 6000;
-    const imgHeightPixels = 3464;
+    const imgWidthPixels = 6000*4;
+    const imgHeightPixels = 3464*4;
     const imgHexCenterPixel_x = imgWidthPixels/3;
     const imgHexCenterPixel_y = imgHeightPixels/2;
 
-    const maxZoom = 4;
+    const maxZoom = 6;
     const tileWidth = 256;//default is 256
 
     const mapMaxResolution = (3780*1000*20)/imgHeightPixels; // meters per pixel of most zoomed in image. 3780 is height of a triangle in km
@@ -94,7 +95,7 @@
     mapLayer = L.gridLayer.loopImage({
         tileSize:tileWidth,
         attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
-        }).addTo(map);
+    }).addTo(map);
 
 
 //---------------------------------------------------------------------------------------------------
@@ -107,12 +108,245 @@
         yPos = mapCenter_y + AerbScaleFactor*(xAerb+yAerb);
         return [yPos,xPos]
     }
-    
-    L.marker(xy(0,0)).addTo(map).bindPopup('0,0');
-    L.marker(xy(.1,0)).addTo(map).bindPopup('.1,0');
-    L.marker(xy(0,.1)).addTo(map).bindPopup('0,.1');
-    L.marker(xy(0,-.3)).addTo(map).bindPopup('0,-.3');
 
+    // Define city names and positions.
+    var cityMarkerList = [];
+    function plotCity(name,xAerb,yAerb){
+        newMarker = L.marker(xy(xAerb,yAerb),).bindPopup(name);
+        cityMarkerList.push(newMarker);
+    }
+    plotCity("Caledwich", -0.055267773, 0.000474296);
+    plotCity("Bricquabrac", -0.013219982, -0.011907579);
+    plotCity("Birger", -0.005349482, -0.033997197);
+    plotCity("Dunbay", -0.004852309, -0.089611772);
+    plotCity("Martiers", 0.075358958, -0.058085698);
+    plotCity("Lensen", 0.064388476, -0.064485993);
+    plotCity("Fishgard", 0.077714671, -0.037830084);
+    plotCity("Llwngor", 0.130353534, -0.073295326);
+    plotCity("Afoellow", 0.05342315, 0.012334368);
+    plotCity("Peony", 0.134340929, 0.022668139);
+    plotCity("Portown", 0.162482221, 0.007646548);
+    plotCity("Cranberry Bay", 0.173762185, 0.012198179);
+    plotCity("Bato", 0.235520322, -0.083715157);
+    plotCity("Headwater", 0.293675904, -0.134101531);
+    plotCity("Salamand Harbor", 0.495695108, -0.221781443);
+    plotCity("Mellifera", 0.43767223, -0.004196616);
+    plotCity("Rai", 0.56363288, 0.020902531);
+    plotCity("City of Spice", 0.612189282, 0.037990787);
+    plotCity("Teembakt", 0.647784249, -0.034590722);
+    plotCity("Outre Cuidai", 0.759130422, -0.138424216);
+    plotCity("Oi Lo", 0.75348252, -0.340272812);
+    plotCity("Sim Than", 0.586433195, -0.158527957);
+    plotCity("Santherani", -0.614872022, -0.148733451);
+    plotCity("Caudexolis", -0.481261897, -0.422885623);
+    plotCity("Flibber", -0.346342323, -0.573856675);
+    plotCity("Jibberti", -0.343381276, -0.57762396);
+    plotCity("Remora", -0.178382864, -0.477369872);
+    plotCity("Murachi", -0.181497178, -0.528090308);
+    plotCity("Oy Museel", 0.253737403, -0.663367483);
+    plotCity("Bigger Lanard", 0.286471487, -0.64497871);
+    plotCity("Chow Fun", 0.629962877, -0.903228691);
+    plotCity("Lamarck", 0.601952198, -0.898232459);
+    plotCity("Crysos", 0.777548677, -0.966379321);
+    plotCity("Geldspiel", 0.831019535, -0.938933142);
+    plotCity("Capros", 0.794373591, -0.927197926);
+    plotCity("Cidium", 0.801098877, -0.904633142);
+    plotCity("Alabaster City", 0.736108478, -0.828392049);
+    plotCity("Excelsion", 0.749028389, -0.852265138);
+    plotCity("Evernia", 0.742097811, -0.89654383);
+    plotCity("Canary Bay", 0.708754888, -0.749903969);
+    plotCity("Objet", -0.093974408, 0.012235812);
+    plotCity("Bawes", -0.042435152, -0.018719854);
+    plotCity("Morregg", 0.111314149, -0.092409181);
+    plotCity("Dain", 0.081517879, -0.098566896);
+    plotCity("Ghan of Daule", 0.067746635, -0.100857658);
+    plotCity("Conkers", 0.007532242, -0.086861796);
+    plotCity("Boastre Vino", 0.081985352, -0.208648222);
+    plotCity("Balletomane", 0.201240187, -0.249807594);
+    plotCity("Oldtown City", 0.257900575, -0.399954076);
+    plotCity("Verigrida", 0.149952454, -0.446610672);
+    plotCity("New Gromsh", 0.068857816, -0.413581269);
+    plotCity("Li'o", 0.171940002, -0.408304734);
+    plotCity("Tapina", 0.013749855, -0.437181095);
+    plotCity("Gelgit", -0.146107202, -0.711350208);
+    plotCity("Bastion", -0.630540273, 0.160350178);
+    plotCity("Bipalium", -0.657342679, 0.226389974);
+    plotCity("Thistle's Point", -0.542114287, 0.156615332);
+    plotCity("Toppotha", -0.407594927, 0.051335255);
+    plotCity("Rokukai", -0.390972614, 0.372616571);
+    plotCity("Wiabyu", -0.368075637, 0.382551225);
+    plotCity("Blackwater", -0.430845196, 0.421238966);
+    plotCity("Jemsh", -0.393334619, 0.409760033);
+    plotCity("Apoto", -0.314147207, 0.306832459);
+    plotCity("Arrenay", -0.319153576, 0.329099139);
+    plotCity("3rd Outpost", -0.164168353, 0.714476884);
+    plotCity("Teweni", 0.304371545, 0.024195848);
+    plotCity("Chartreux", 0.65578437, 0.095937925);
+    plotCity("Olivin", 0.592163683, 0.152812065);
+    plotCity("Citrin", 0.636775559, 0.138361798);
+    plotCity("Grin Tilmar", 0.639580609, 0.188576679);
+    plotCity("Telarian", 0.737365792, 0.189785802);
+    plotCity("Jimswinger", 0.723897791, 0.17340143);
+    plotCity("Tep-To", 0.901901906, 0.035176951);
+    plotCity("Tinac", -0.076430053, 0.874470243);
+    plotCity("Tiac", -0.028626636, 0.941132016);
+    plotCity("Crooked Citadel", -0.472376949, 0.146143622);
+    plotCity("Atalatat", -0.464000491, 0.098902965);
+    plotCity("Snaling", -0.456434061, -0.101351116);
+    plotCity("Invers", -0.12935441, -0.28569061);
+    plotCity("Blova", -0.055494651, -0.024583769);
+    plotCity("Croso City", -0.613758673, 0.660133701);
+    plotCity("Princess' Port", -0.811834736, 0.664640264);
+    plotCity("Pinto", -0.84951594, 0.74623884);
+    plotCity("Jawkward", -0.854557753, 0.4127913);
+    plotCity("Bilimbamp", -0.333836343, 0.589028647);
+    plotCity("Lowess Point", -0.487149574, 0.630781269);
+    plotCity("Saiga", -0.461578894, 0.630822214);
+    plotCity("Yaffalia", -0.234348556, 0.339395546);
+    plotCity("Hengowon", -0.305055659, 0.263631977);
+    plotCity("Ink Ongal", -0.349501309, 0.296058243);
+    plotCity("Copper Valley", -0.359486311, 0.280102884);
+    plotCity("Emsonel", -0.326954357, 0.242392719);
+    plotCity("Shesdge", -0.355824993, 0.224855891);
+    plotCity("Keelburry", -0.40004004, 0.248458788);
+    plotCity("Sanguine", 0.026341256, -0.047611553);
+    plotCity("Barren Jewel", 0.033406501, -0.137596782);
+    plotCity("Grimsburg", 0.09691341, -0.036504872);
+    plotCity("Caerdall", -0.378893176, 0.278201091);
+    plotCity("Junah", 0.192798636, -0.187305323);
+    plotCity("Lal Kran", -0.311228229, 0.458331526);
+    plotCity("Kresham", -0.286306288, 0.446453042);
+    plotCity("Claw & Clocks", 0.196775572, -0.16116303);
+    plotCity("Localilis", -0.405306295, 0.215912449);
+    plotCity("Brindle", -0.367159154, 0.334035046);
+    plotCity("Five Spires", -0.234009358, 0.052371712);
+    plotCity("Ludhad", -0.094128823, -0.039781198);
+    plotCity("Frustbury", 0.189509987, -0.149963376);
+    plotCity("Scamadus", -0.490220974, 0.304865536);
+    plotCity("Stonk", -0.527547849, 0.100304986);
+    plotCity("Stonk", -0.485597349, 0.134622302);
+    plotCity("Vibrant Reef", -0.578765634, 0.654778031);
+    plotCity("Crenn", 0.331905606, -0.430735359);
+    plotCity("The Buried Steppe", 0.583858036, 0.073495876);
+    plotCity("Grunnings", -0.19341353, -0.543305621);
+    plotCity("Orrangush", 0.702258904, 0.079102953);
+    plotCity("Remar", 0.549052466, -0.669928411);
+    plotCity("Krenshaw", -0.284470884, 0.10356776);
+    plotCity("Capidal", -0.355236006, 0.2432263);
+    plotCity("Pequeen", -0.463403269, 0.297287846);
+    plotCity("Hemforth", -0.198958814, -0.231780622);
+    plotCity("Th'Dul", 0.610615522, -0.706550973);
+    plotCity("Poyais", 0.310288325, -0.720492528);
+    plotCity("Mintropolis", 0.57640522, -0.689138756);
+    plotCity("Sul Paint", 0.576327055, -0.689128365);
+    plotCity("Rainbean", -0.442279117, 0.299574319);
+    plotCity("Knobs Bob", -0.189546564, -0.232909152);
+    plotCity("Gimmit", 0.812314358, 0.069210254);
+    plotCity("Khof", -0.23501743, 0.134332652);
+    plotCity("Zhet", -0.17297934, 0.070535672);
+    plotCity("Moppe", 0.633053365, -0.954921748);
+    plotCity("Karathawa", -0.400320361, 0.071768635);
+    plotCity("Xylocopa", 0.408563446, 0.009423536);
+    plotCity("Frisia", 0.763294936, -0.027458292);
+    plotCity("Goshen", 0.767102269, -0.010620385);
+    plotCity("The Vervainium", -0.055146363, 0.007730633);
+    plotCity("Turnwys", 0.015605462, -0.014190749);
+    plotCity("Tarball", 0.023331966, -0.10413605);
+    plotCity("Regauss", 0.084168492, -0.077238927);
+    plotCity("Pontyswel", 0.120922108, -0.006825245);
+    plotCity("Cynbac", 0.210849022, -0.098606823);
+    plotCity("Mossrock", 0.336142667, -0.190113336);
+    plotCity("Stelmo", 0.425421188, -0.162568214);
+    plotCity("Salt Sea City", 0.789982129, -0.014871446);
+    plotCity("Adieu", -0.142397719, 0.059025736);
+    plotCity("Oikot", -0.347353059, 0.287292809);
+    plotCity("Port Nepala", 0.623410118, -0.70812606);
+    plotCity("Shica City", 0.833206437, -0.697589886);
+    plotCity("Privet", -0.193001058, -0.571959592);
+    plotCity("Misha", 0.577791297, -0.708331607);
+    plotCity("Borromor", 0.214940183, -0.300406579);
+    plotCity("Suhess", 0.201453332, -0.173752853);
+    plotCity("Marther's Beach", 0.095331126, -0.162164929);
+    plotCity("Brines ", 0.81702122, -0.538353607);
+    plotCity("Fermens", 0.797426262, -0.525620617);
+    plotCity("Hillmont", 0.873036551, -0.019911562);
+    plotCity("Sunrise", 0.599201714, 0.121995958);
+    plotCity("Goldawn", 0.563406048, 0.155525352);
+    plotCity("Weat", 0.582518435, 0.161061333);
+    plotCity("Papayaport", 0.543897633, 0.20372388);
+    plotCity("Sancred Falls", 0.586625195, 0.273188444);
+    plotCity("Mermolis", -0.223620855, 0.738552543);
+    plotCity("Juliad", -0.090405838, 0.904366816);
+    plotCity("Paridise", -0.822254301, 0.678454346);
+    plotCity("TIKoNRaG", -0.848528356, 0.694203986);
+    plotCity("Miomy", -0.412915256, -0.138349891);
+    plotCity("Baranard", 0.023447998, 0.052045997);
+    plotCity("New Oden", 0.012550267, -0.077407581);
+    plotCity("Ba d' Kha", -0.237868884, 0.180270281);
+    plotCity("Mou Kha", -0.259898864, 0.188720728);
+    plotCity("Hekmeht", -0.257050526, 0.101383939);
+    plotCity("Glog", -0.20560928, 0.096748245);
+    plotCity("Galin", -0.340451388, 0.277636486);
+    plotCity("Silverrift", -0.332939234, 0.414459648);
+    plotCity("Constanstibul", -0.374818991, 0.427620732);
+    plotCity("Mahngu", -0.366688391, 0.36353539);
+    plotCity("Ayneim", -0.362006636, 0.374530285);
+    plotCity("Vonsway", -0.377328182, 0.258680606);
+    plotCity("Pyingoeul", -0.484130114, 0.331850625);
+    plotCity("Pagat", 0.013391459, -0.450576254);
+    plotCity("Zhong", -0.093683924, -0.435202833);
+    plotCity("Mobroad", 0.220635022, -0.440686859);
+    plotCity("Freerider", 0.246300409, -0.416899703);
+    plotCity("Pressuire", -0.081144859, 0.011431496);
+    plotCity("Holdo", -0.102928278, -0.016260531);
+    plotCity("Fuolmad", -0.058929515, -0.070163577);
+    plotCity("Ja Lei", 0.830321856, -0.202137667);
+    plotCity("Rena", 0.786182192, -0.084036948);
+    plotCity("Riksbank", -0.333213401, 0.193033488);
+    plotCity("Vanront", 0.530183609, -0.618594434);
+    plotCity("Hemmonjen", -0.311029633, 0.2544198);
+    plotCity("Lefflili", -0.219539362, 0.339667728);
+    plotCity("Maneline", 0.307473085, -0.109441283);
+    plotCity("Moue", 0.245489425, -0.070462431);
+    plotCity("Chatoyant", 0.251872266, -0.085183064);
+    plotCity("Jabubu", 0.801369362, 0.127963035);
+    plotCity("Wissant", -0.072655283, 0.008042286);
+    plotCity("Cunetha", -0.054560314, -0.015024372);
+    plotCity("Auxellion", -0.08916821, -0.002368899);
+    plotCity("Ferby", -0.021215269, -0.037096111);
+    plotCity("Boquet", -0.04725502, 0.009655086);
+    plotCity("Sudslip", 0.679533209, -0.808298008);
+    plotCity("Puddock", 0.395749237, -0.219040905);
+    plotCity("Dropwort", 0.336560671, -0.211938015);
+    plotCity("Gellid Embassy", 0.171814391, 0.235938971);
+    plotCity("City of Nails", 0.575887172, 0.038984093);
+    plotCity("Laminae", 0.544314209, 0.05338718);
+    plotCity("Bembicity", 0.501330191, -0.021035786);
+    plotCity("Anthoville", 0.504230515, -0.009835334);
+    plotCity("Nysson", 0.418578406, -0.007330365);
+    plotCity("Smeltings", -0.206528391, -0.523824874);
+    plotCity("Whinging", -0.185017839, -0.472504726);
+    plotCity("Stonewall", -0.243552925, -0.487126988);
+    plotCity("Grimmauld", -0.147491821, -0.543480498);
+    plotCity("Valleymout", -0.533706024, 0.169263292);
+    plotCity("Caneicester", 0.11997465, -0.066146753);
+    plotCity("Salzasa", 0.127622374, -0.197336525);
+    plotCity("Flashbay", 0.177764305, -0.076947836);
+    plotCity("Masel", 0.206264131, -0.044356825);
+    plotCity("Mannehmanu", 0.186656833, -0.220002014);
+    plotCity("Linkar", 0.228722319, -0.227008832);
+    plotCity("Port D", 0.232878723, 0.020234691);
+    plotCity("Buurg", 0.641056556, 0.222162407);
+    plotCity("Takbok", 0.579004677, -0.717426125);
+    plotCity("NujÃ¶rk", 0.408335367, -0.937429375);
+
+
+// Add cities to map as toggleable layer
+// https://leafletjs.com/examples/layers-control/
+var cities =  L.layerGroup(cityMarkerList).addTo(map);
+var baseMaps = {"Aerb": mapLayer,};
+var overlayMaps = {"Cities":cities,};
+var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 </script>
 
@@ -123,8 +357,10 @@
 
 <!--
 Useful reference links
+https://leafletjs.com/reference.html
 https://leafletjs.com/examples/extending/extending-2-layers.html#lgridlayer-and-dom-elements
 https://gis.stackexchange.com/questions/200865/leaflet-crs-simple-custom-scale
 http://conanmap.mapvault.net/
 https://stackoverflow.com/questions/58297619/how-to-stretch-the-map-under-the-visible-area
+https://stackoverflow.com/questions/67620707/react-leaflet-markers-disappear-when-panning-the-map
 -->
