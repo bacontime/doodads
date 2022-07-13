@@ -30,13 +30,13 @@
 
 <script type="text/javascript">
 
-    const img = "url(aerbtile.webp)";
-    const imgWidthPixels = 15000;
-    const imgHeightPixels = 8660;
+    //const img = "url(aerbtile.webp)";
+    const imgWidthPixels = 15000*2;//6000*4;
+    const imgHeightPixels = 8660*2;//3464*4;
     const imgHexCenterPixel_x = imgWidthPixels/3;
     const imgHexCenterPixel_y = imgHeightPixels/2;
 
-    const maxZoom = 6;
+    const maxZoom = 5;
     const tileWidth = 256;//default is 256
 
     const mapMaxResolution = (3780*1000*20)/imgHeightPixels; // meters per pixel of most zoomed in image. 3780 is height of a triangle in km
@@ -76,7 +76,14 @@
             //tile.innerHTML = [coords.x, coords.y, coords.z,"<br>",width].join(', ');
             //tile.style.outline = '1px solid blue';
 
-            tile.style.backgroundImage=img;
+            if (coords.z <= maxZoom-2){
+                tile.style.backgroundImage=this.options.bgImageSmall;
+                console.log('smol', coords.z);
+            } else {
+                tile.style.backgroundImage=this.options.bgImageLarge;
+                console.log('beeg', coords.z);
+            }
+
             var offsetX = -coords.x*tileWidth;
             var offsetY = -coords.y*tileWidth;
             tile.style.backgroundPosition= offsetX.toString()+"px "+offsetY.toString()+"px";
@@ -95,6 +102,8 @@
     mapLayer = L.gridLayer.loopImage({
         tileSize:tileWidth,
         attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
+        bgImageLarge: "url(aerbtile.webp)",
+        bgImageSmall: "url(aerbtilesmall.png)",
     }).addTo(map);
 
 
@@ -336,17 +345,26 @@
     plotCity("Mannehmanu", 0.186656833, -0.220002014);
     plotCity("Linkar", 0.228722319, -0.227008832);
     plotCity("Port D", 0.232878723, 0.020234691);
-    plotCity("Buurg", 0.641056556, 0.222162407);
+    plotCity("Buurg", 0.641056556, 0.222162407); //It looks like I accidentally move this city in the final export.
     plotCity("Takbok", 0.579004677, -0.717426125);
-    plotCity("NujÃ¶rk", 0.408335367, -0.937429375);
+    plotCity("Nujörk", 0.408335367, -0.937429375);
 
 
-// Add cities to map as toggleable layer
-// https://leafletjs.com/examples/layers-control/
-var cities =  L.layerGroup(cityMarkerList).addTo(map);
-var baseMaps = {"Aerb": mapLayer,};
-var overlayMaps = {"Cities":cities,};
-var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+    // Define EZ names and positions.
+    var zoneMarkerList = [];
+    function plotEZ(name,xAerb,yAerb){
+        newMarker = L.marker(xy(xAerb,yAerb),).bindPopup(name);
+        zoneMarkerList.push(newMarker);
+    }
+
+
+    // Add cities and zones to map as toggleable layer
+    // https://leafletjs.com/examples/layers-control/
+    var cities =  L.layerGroup(cityMarkerList).addTo(map);
+    var ezones =  L.layerGroup(cityMarkerList).addTo(map);
+    var baseMaps = {"Aerb": mapLayer,};
+    var overlayMaps = {"Cities":cities, "Exclusion Zones":ezones,};
+    var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 </script>
 
