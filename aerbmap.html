@@ -21,6 +21,13 @@
         width: 100%;
         height: 100%;
     }
+    .leaflet-tooltip {
+        padding: 3px 5px;
+        background-color: #fff9;
+        border: 0px;
+        line-height: 0.8em;
+        font-size: smaller;
+    }
 </style>
 
 </head>
@@ -30,14 +37,17 @@
 
 <script type="text/javascript">
 
-    //const img = "url(aerbtile.webp)";
-    const imgWidthPixels = 15000*2;//6000*4;
-    const imgHeightPixels = 8660*2;//3464*4;
+    const imgLarge = "url(aerbimg/AerbTileLarge.webp)";
+    const imgWidthPixels = 15000;//6000*4;
+    const imgHeightPixels = 8660;//3464*4;
     const imgHexCenterPixel_x = imgWidthPixels/3;
     const imgHexCenterPixel_y = imgHeightPixels/2;
 
-    const maxZoom = 5;
-    const tileWidth = 256;//default is 256
+    const imgSmall = "url(aerbimg/AerbTileSmall.webp)";
+    const imgSimple = "url(aerbimg/AerbTileSimple.webp)";
+
+    const maxZoom = 8;
+    const tileWidth = 1024;//default is 256
 
     const mapMaxResolution = (3780*1000*20)/imgHeightPixels; // meters per pixel of most zoomed in image. 3780 is height of a triangle in km
     const mapMinResolution = Math.pow(2, maxZoom) * mapMaxResolution;
@@ -58,7 +68,7 @@
     var map = L.map('map', {
         crs: myCRS,
         center: [mapCenter_y, mapCenter_x],
-        zoom: 0,
+        zoom: maxZoom-3,
         minZoom: 0,
         maxZoom: maxZoom,
     });
@@ -76,13 +86,7 @@
             //tile.innerHTML = [coords.x, coords.y, coords.z,"<br>",width].join(', ');
             //tile.style.outline = '1px solid blue';
 
-            if (coords.z <= maxZoom-2){
-                tile.style.backgroundImage=this.options.bgImageSmall;
-                console.log('smol', coords.z);
-            } else {
-                tile.style.backgroundImage=this.options.bgImageLarge;
-                console.log('beeg', coords.z);
-            }
+            tile.style.backgroundImage=this.options.bgImage;
 
             var offsetX = -coords.x*tileWidth;
             var offsetY = -coords.y*tileWidth;
@@ -99,16 +103,91 @@
 
     L.gridLayer.loopImage = function(opts) {return new L.GridLayer.LoopImage(opts);};
 
-    mapLayer = L.gridLayer.loopImage({
+    mapLayerLowQuality = L.gridLayer.loopImage({
+        tileSize:tileWidth,
+        attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.',
+        bgImage: imgSmall,
+    }).addTo(map);
+
+    mapLayerHighQuality = L.gridLayer.loopImage({
         tileSize:tileWidth,
         attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
-        bgImageLarge: "url(aerbtile.webp)",
-        bgImageSmall: "url(aerbtilesmall.webp)",
-    }).addTo(map);
+        bgImage:imgLarge,
+    })
+
+    mapLayerSimple = L.gridLayer.loopImage({
+        tileSize:tileWidth,
+        attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
+        bgImage:imgSimple,
+    })
 
 
 //---------------------------------------------------------------------------------------------------
+//Define our icons
 
+var cityIcon = L.icon({
+    iconUrl: 'aerbimg/markerCity.png',
+    iconSize:     [8, 8], // size of the icon
+    iconAnchor:   [4, 4], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+});
+
+var cityIconCanon = L.icon({
+    iconUrl: 'aerbimg/markerCityCanon.png',
+    iconSize:     [12, 12], // size of the icon
+    iconAnchor:   [6, 6],
+});
+
+var cityIconAtheneum = L.icon({
+    iconUrl: 'aerbimg/markerCityAtheneum.png',
+    iconSize:     [24, 24], // size of the icon
+    iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, -12] // point from which the popup should open relative to the iconAnchor
+});
+
+var ezIcon = L.icon({
+    iconUrl: 'aerbimg/markerEZ.png',
+    iconSize:     [15, 15], // size of the icon
+    iconAnchor:   [7, 7], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+});
+
+var ezIconMajorEmpersoned = L.icon({
+    iconUrl: 'aerbimg/markerEZMajorEmpersoned.png', iconSize:[20, 20], iconAnchor:[10,10], popupAnchor:[0, 0],
+});
+var ezIconMajorEntad = L.icon({
+    iconUrl: 'aerbimg/markerEZMajorEntad.png', iconSize:[20, 20], iconAnchor:[10,10], popupAnchor:[0, 0],
+});
+var ezIconMajorOther = L.icon({
+    iconUrl: 'aerbimg/markerEZMajorOther.png', iconSize:[20, 20], iconAnchor:[10,10], popupAnchor:[0, 0],
+});
+var ezIconMinorEmpersoned = L.icon({
+    iconUrl: 'aerbimg/markerEZMinorEmpersoned.png', iconSize:[15, 15], iconAnchor:[8, 8], popupAnchor:[0, 0],
+});
+var ezIconMinorEntad = L.icon({
+    iconUrl: 'aerbimg/markerEZMinorEntad.png', iconSize:[15, 15], iconAnchor:[8, 8], popupAnchor:[0, 0],
+});
+var ezIconMinorOther = L.icon({
+    iconUrl: 'aerbimg/markerEZMinorOther.png', iconSize:[15, 15], iconAnchor:[8, 8], popupAnchor:[0, 0],
+});
+var ezIconFreeEmpersoned = L.icon({
+    iconUrl: 'aerbimg/markerEZFreeEmpersoned.png', iconSize:[10, 10], iconAnchor:[5, 5], popupAnchor:[0, 0],
+});
+var ezIconFreeEntad = L.icon({
+    iconUrl: 'aerbimg/markerEZFreeEntad.png', iconSize:[10, 10], iconAnchor:[5, 5], popupAnchor:[0, 0],
+});
+var ezIconFreeOther = L.icon({
+    iconUrl: 'aerbimg/markerEZFreeOther.png', iconSize:[10, 10], iconAnchor:[5, 5], popupAnchor:[0, 0],
+});
+
+
+ezMarkerMap = {
+    MajorEmpersoned: ezIconMajorEmpersoned, MajorEntad: ezIconMajorEntad, MajorOther: ezIconMajorOther,
+    MinorEmpersoned: ezIconMinorEmpersoned, MinorEntad: ezIconMinorEntad, MinorOther: ezIconMinorOther,
+    FreeEmpersoned:  ezIconFreeEmpersoned,  FreeEntad:  ezIconFreeEntad,  FreeOther:  ezIconFreeOther, 
+}
+
+//---------------------------------------------------------------------------------------------------
 
     const AerbScaleFactor = mapMaxResolution*imgHeightPixels/2; //ratio between a unit in Aerbian coordinates and meters
     function xy(xAerb,yAerb){ 
@@ -118,26 +197,52 @@
         return [yPos,xPos]
     }
 
-    // Define city names and positions.
     var cityMarkerList = [];
     function plotCity(name,xAerb,yAerb){
-        newMarker = L.marker(xy(xAerb,yAerb),).bindPopup(name);
+        popupInfo = "<center><b>"+name+"</b></center>";
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIcon}).bindPopup(popupInfo).bindTooltip(name, {permanent: false, direction: "center", opacity:1, offset: [0,-8]});
         cityMarkerList.push(newMarker);
     }
-    plotCity("Caledwich", -0.055267773, 0.000474296);
+    function plotCityCanon(name,xAerb,yAerb){
+        popupInfo = "<center><b>"+name+"</b></center>";
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconCanon}).bindPopup(popupInfo).bindTooltip(name, {permanent: true, direction: "center", opacity:1, offset: [0,12]});
+        cityMarkerList.push(newMarker);
+    }
+
+    var atheneumMarkerList = [];
+    function plotCityAtheneum(name, study,xAerb,yAerb){
+        popupInfo = "<center><b>"+name+"</b><br><small>"+study+"</small></center>";
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconAtheneum}).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,24]}).bindPopup(popupInfo);
+        atheneumMarkerList.push(newMarker);
+    }
+
+    var zoneMarkerList = [];
+    function plotEZ(name, ezExclusion, ezType, ezDanger, xAerb, yAerb, zAerb){
+        icontype = ezMarkerMap[ezDanger+ezType];
+        popupInfo = "<center><b>"+name+"</b><hr>"+ezDanger+" Exclusion";
+        if (ezType == "Empersoned"){popupInfo=popupInfo+"<i> (Empersoned)</i>";}
+        if (ezType == "Entad"){popupInfo=popupInfo+"<i><small> (Entad)</small></i>";}
+        popupInfo += "<br>"+ezExclusion+"</center>"
+        newMarker = L.marker(xy(xAerb,yAerb),{icon:icontype}).bindPopup(popupInfo).bindTooltip("<span style='color:#5c0625;'>"+name+"</span>", {permanent: true, direction: "center", opacity:1, offset: [0,16]});
+        zoneMarkerList.push(newMarker);
+    }
+
+//---------------------------------------------------------------------------------------------------
+// Define city names and positions.
+    plotCityCanon("Caledwich", -0.055267773, 0.000474296);
     plotCity("Bricquabrac", -0.013219982, -0.011907579);
     plotCity("Birger", -0.005349482, -0.033997197);
     plotCity("Dunbay", -0.004852309, -0.089611772);
     plotCity("Martiers", 0.075358958, -0.058085698);
-    plotCity("Lensen", 0.064388476, -0.064485993);
+    plotCityCanon("Lensen", 0.064388476, -0.064485993);
     plotCity("Fishgard", 0.077714671, -0.037830084);
     plotCity("Llwngor", 0.130353534, -0.073295326);
     plotCity("Afoellow", 0.05342315, 0.012334368);
     plotCity("Peony", 0.134340929, 0.022668139);
     plotCity("Portown", 0.162482221, 0.007646548);
-    plotCity("Cranberry Bay", 0.173762185, 0.012198179);
+    plotCityAtheneum("Cranberry Bay", "Bone & Flesh", 0.173762185, 0.012198179);
     plotCity("Bato", 0.235520322, -0.083715157);
-    plotCity("Headwater", 0.293675904, -0.134101531);
+    plotCityCanon("Headwater", 0.293675904, -0.134101531);
     plotCity("Salamand Harbor", 0.495695108, -0.221781443);
     plotCity("Mellifera", 0.43767223, -0.004196616);
     plotCity("Rai", 0.56363288, 0.020902531);
@@ -159,7 +264,7 @@
     plotCity("Crysos", 0.777548677, -0.966379321);
     plotCity("Geldspiel", 0.831019535, -0.938933142);
     plotCity("Capros", 0.794373591, -0.927197926);
-    plotCity("Cidium", 0.801098877, -0.904633142);
+    plotCityCanon("Cidium", 0.801098877, -0.904633142);
     plotCity("Alabaster City", 0.736108478, -0.828392049);
     plotCity("Excelsion", 0.749028389, -0.852265138);
     plotCity("Evernia", 0.742097811, -0.89654383);
@@ -170,12 +275,12 @@
     plotCity("Dain", 0.081517879, -0.098566896);
     plotCity("Ghan of Daule", 0.067746635, -0.100857658);
     plotCity("Conkers", 0.007532242, -0.086861796);
-    plotCity("Boastre Vino", 0.081985352, -0.208648222);
+    plotCityAtheneum("Boastre Vino", "Speculation & Scrutiny", 0.081985352, -0.208648222);
     plotCity("Balletomane", 0.201240187, -0.249807594);
     plotCity("Oldtown City", 0.257900575, -0.399954076);
     plotCity("Verigrida", 0.149952454, -0.446610672);
     plotCity("New Gromsh", 0.068857816, -0.413581269);
-    plotCity("Li'o", 0.171940002, -0.408304734);
+    plotCityAtheneum("Li'o", "Sound & Silence", 0.171940002, -0.408304734);
     plotCity("Tapina", 0.013749855, -0.437181095);
     plotCity("Gelgit", -0.146107202, -0.711350208);
     plotCity("Bastion", -0.630540273, 0.160350178);
@@ -199,7 +304,7 @@
     plotCity("Tep-To", 0.901901906, 0.035176951);
     plotCity("Tinac", -0.076430053, 0.874470243);
     plotCity("Tiac", -0.028626636, 0.941132016);
-    plotCity("Crooked Citadel", -0.472376949, 0.146143622);
+    plotCityAtheneum("Crooked Citadel", "Keys & Cloaks", -0.472376949, 0.146143622);
     plotCity("Atalatat", -0.464000491, 0.098902965);
     plotCity("Snaling", -0.456434061, -0.101351116);
     plotCity("Invers", -0.12935441, -0.28569061);
@@ -218,28 +323,28 @@
     plotCity("Emsonel", -0.326954357, 0.242392719);
     plotCity("Shesdge", -0.355824993, 0.224855891);
     plotCity("Keelburry", -0.40004004, 0.248458788);
-    plotCity("Sanguine", 0.026341256, -0.047611553);
-    plotCity("Barren Jewel", 0.033406501, -0.137596782);
+    plotCityAtheneum("Sanguine", "Quills & Blood", 0.026341256, -0.047611553);
+    plotCityCanon("Barren Jewel", 0.033406501, -0.137596782);
     plotCity("Grimsburg", 0.09691341, -0.036504872);
-    plotCity("Caerdall", -0.378893176, 0.278201091);
-    plotCity("Junah", 0.192798636, -0.187305323);
+    plotCityAtheneum("Caerdall", "Ink & Ardor", -0.378893176, 0.278201091);
+    plotCityAtheneum("Junah", "Barriers", 0.192798636, -0.187305323);
     plotCity("Lal Kran", -0.311228229, 0.458331526);
     plotCity("Kresham", -0.286306288, 0.446453042);
-    plotCity("Claw & Clocks", 0.196775572, -0.16116303);
+    plotCityAtheneum("Claw & Clocks", "Claw & Clocks", 0.196775572, -0.16116303);
     plotCity("Localilis", -0.405306295, 0.215912449);
     plotCity("Brindle", -0.367159154, 0.334035046);
-    plotCity("Five Spires", -0.234009358, 0.052371712);
-    plotCity("Ludhad", -0.094128823, -0.039781198);
-    plotCity("Frustbury", 0.189509987, -0.149963376);
-    plotCity("Scamadus", -0.490220974, 0.304865536);
+    plotCityCanon("Five Spires", -0.234009358, 0.052371712);
+    plotCityCanon("Ludhad", -0.094128823, -0.039781198);
+    plotCityCanon("Frustbury", 0.189509987, -0.149963376);
+    plotCityAtheneum("Scamadus", "Steel & Sweat", -0.490220974, 0.304865536);
     plotCity("Stonk", -0.527547849, 0.100304986);
     plotCity("Stonk", -0.485597349, 0.134622302);
     plotCity("Vibrant Reef", -0.578765634, 0.654778031);
-    plotCity("Crenn", 0.331905606, -0.430735359);
-    plotCity("The Buried Steppe", 0.583858036, 0.073495876);
-    plotCity("Grunnings", -0.19341353, -0.543305621);
-    plotCity("Orrangush", 0.702258904, 0.079102953);
-    plotCity("Remar", 0.549052466, -0.669928411);
+    plotCityAtheneum("Crenn", "Might & Motion", 0.331905606, -0.430735359);
+    plotCityAtheneum("The Buried Steppe", "Stars & Sigils", 0.583858036, 0.073495876);
+    plotCityAtheneum("Grunnings", "Stars & Sigils<br>Runeforge Satellite Campus", -0.19341353, -0.543305621);
+    plotCityCanon("Orrangush", 0.702258904, 0.079102953);
+    plotCityCanon("Remar", 0.549052466, -0.669928411);
     plotCity("Krenshaw", -0.284470884, 0.10356776);
     plotCity("Capidal", -0.355236006, 0.2432263);
     plotCity("Pequeen", -0.463403269, 0.297287846);
@@ -258,7 +363,7 @@
     plotCity("Xylocopa", 0.408563446, 0.009423536);
     plotCity("Frisia", 0.763294936, -0.027458292);
     plotCity("Goshen", 0.767102269, -0.010620385);
-    plotCity("The Vervainium", -0.055146363, 0.007730633);
+    plotCityAtheneum("The Vervainium", "Flower Magic & Pustule Magic", -0.055146363, 0.007730633);
     plotCity("Turnwys", 0.015605462, -0.014190749);
     plotCity("Tarball", 0.023331966, -0.10413605);
     plotCity("Regauss", 0.084168492, -0.077238927);
@@ -351,19 +456,75 @@
 
 
     // Define EZ names and positions.
-    var zoneMarkerList = [];
-    function plotEZ(name,xAerb,yAerb){
-        newMarker = L.marker(xy(xAerb,yAerb),).bindPopup(name);
-        zoneMarkerList.push(newMarker);
-    }
+    plotEZ("Dorisopolis", "CopyClanning", "Empersoned",  "Major",  -0.5789, 0.1766, 0.4029)
+    plotEZ("Cthonic", "Dungeon Creation", "Other",  "Major",  0.2911, 0.0427, -0.3337)
+    plotEZ("City of Lasting Blood", "People leave blood trails.", "Other",  "Major",  0.5965, 0.0413, -0.6379)
+    plotEZ("Manifest", "Mind Control", "Empersoned",  "Major",  -0.3602, 0.2971, 0.0631)
+    plotEZ("Pendleham", "Fleshsmithing", "Empersoned",  "Minor",  -0.3739, 0.3018, 0.0721)
+    plotEZ("Gatesmith", "Portal Magic", "Empersoned",  "Major",  -0.3935, 0.2744, 0.1191)
+    plotEZ("Rove", "Katamari Magic", "Empersoned",  "Minor",  -0.4046, 0.204, 0.2006)
+    plotEZ("Cadian", "AI Underworld Gaurdian", "Empersoned",  "Major",  -0.1638, 0.7168, -0.553)
+    plotEZ("Lalonei", "Homostasis", "Other",  "Free",  0.7723, -0.1501, -0.6222)
+    plotEZ("Parsmont", "Universal Voting", "Other",  "Free",  0.7506, -0.8438, 0.0932)
+    plotEZ("Nightsmoke", "City of Always Night", "Other",  "Minor",  -0.2463, 0.2897, -0.0434)
+    plotEZ("Wettring", "Entad that makes blood", "Entad",  "Major",  -0.3039, 0.1893, 0.1146)
+    plotEZ("Necrolaborem", "Necromancy", "Empersoned",  "Minor",  -0.3407, 0.1722, 0.1685)
+    plotEZ("Gates of Leron", "Other Side", "Other",  "Major",  -0.4124, 0.8829, -0.4705)
+    plotEZ("Æ", "Ash Magic", "Other",  "Minor",  -0.3614, 0.5758, -0.2144)
+    plotEZ("Fel Seed", "Seeding", "Empersoned",  "Major",  0.2027, -0.0636, -0.1392)
+    plotEZ("Risen Lands", "Necrotic Field Effect", "Other",  "Major",  -0.085, 0.0018, 0.0832)
+    plotEZ("Datura Desert", "Scrubbing Blight", "Other",  "Major", 0.0352, -0.1348, 0.0996)
+    plotEZ("Whiffle", "Invocation (Wind)", "Other",  "Major",  0.013, -0.0812, 0.0682)
+    plotEZ("Glassy Fields", "Glass Magic", "Other",  "Major",  0.1097, -0.0205, -0.0892)
+    plotEZ("Herront", "Unwavering Loyalty", "Empersoned",  "Minor",  -0.1527, -0.2, 0.3527)
+    plotEZ("Blue Fields", "Nuclear Weapons (Irradiated)", "Other",  "Major",  -0.2758, 0.2206, 0.0552)
+    plotEZ("Pai Shep", "Combat Farming", "Empersoned",  "Major",  0.6042, 0.1628, -0.7669)
+    plotEZ("Lunar", "Looping", "Empersoned",  "Major",  -0.387, 0.2352, 0.1519)
+    //plotEZ("Skin Magic", "Skin Magic", "Other",  "Free",  0.1743, -0.4091, 0.2348)
+    plotEZ("Contra-ethereal", "Astral", "Other",  "Minor",  -0.0378, 0.8629, -0.8251)
+    plotEZ("Publican", "Barriers", "Other",  "Minor",  0.1913, -0.273, 0.0817)
+    plotEZ("Mendel", "Barriers", "Other",  "Minor",  0.5806, -0.9328, 0.3522)
+    plotEZ("Papillion", "Butterfly Magic", "Other",  "Minor",  0.69, -0.2846, -0.4053)
+    plotEZ("Knotted Noose", "Chronomancy", "Other",  "Minor",  -0.1383, -0.7022, 0.8405)
+    plotEZ("Manifold", "Clay Magic", "Other",  "Major",  -0.1719, 0.2867, -0.1148)
+    plotEZ("Oster", "Clock Magic", "Other",  "Major",  0.2705, -0.6541, 0.3836)
+    plotEZ("Corflowers", "Hat of Obsession with the Hat", "Entad",  "Minor",  -0.6068, 0.1333, 0.4735)
+    plotEZ("Flaguhan", "Quilt That Super Charges Entads", "Entad",  "Major",  0.8311, 0.0306, -0.8617)
+    plotEZ("Zentria", "Entad that warps space", "Entad",  "Major",  -0.0077, 0.9711, -0.9633)
+    plotEZ("Domestic", "Entad", "Entad",  "Minor",  0.5931, -0.7139, 0.1208)
+    plotEZ("Moot", "Entad antimemes", "Entad",  "Minor",  -0.1923, 0.1632, 0.0292)
+    plotEZ("Ravenous", "Groove Casting", "Other",  "Major",  -0.3866, 0.4382, -0.0517)
+    plotEZ("Spect", "Multilevel", "Other",  "Major",  -0.1806, 0.0846, 0.096)
+    plotEZ("Land of Babes", "Necronatalism", "Other",  "Major",  0.454, 0.0733, -0.5273)
+    plotEZ("Bowdler", "Redaction Magic", "Other",  "Major",  0.0069, -0.0489, 0.0419)
+    plotEZ("Feng", "Shuism", "Other",  "Major",  -0.4606, 0.2776, 0.183)
+    plotEZ("Valley of Cards", "Tarot", "Other",  "Major",  0.01, -0.4585, 0.4484)
+    plotEZ("Torn Tapestry", "Thread Magic", "Other",  "Major",  -0.3386, -0.572, 0.9105)
+    plotEZ("Unity", "Uniqulomancy", "Other",  "Major",  -0.3295, 0.2374, 0.0921)
+    plotEZ("Flintonstele", "Conjoinery", "Other",  "Major",  -0.4687, -0.0537, 0.5224)
+    plotEZ("William's Net", "Constriction Magic", "Other",  "Major",  0.1006, -0.936, 0.8353)
+    plotEZ("Adamham", "Creationism", "Other",  "Major",  -0.1243, -0.251, 0.3753)
+    plotEZ("Glass Wall", "Crystal Magic Partial Exclusion", "Other",  "Minor",  -0.9586, 0.4739, 0.4848)
+    plotEZ("Degenerate Earth", "Dibbling", "Other",  "Major",  -0.1366, -0.7487, 0.8853)
+    plotEZ("Greater Blasphemy", "Curses", "Other",  "Minor",  0.0225, -0.4491, 0.4265)
+    plotEZ("Million Nations", "Divination", "Other",  "Minor",  -0.0315, 0.8404, -0.8089)
+    plotEZ("Theraba", "Ex Nihilo", "Other",  "Minor",  0.1417, -0.1516, 0.0099)
+    plotEZ("Do Not", "Force Magic", "Other",  "Minor",  -0.1243, -0.7038, 0.8282)
+    plotEZ("Funnelin", "Funnel Magic", "Other",  "Major",  0.6345, -0.213, -0.4215)
+    plotEZ("City of Paints", "Gray Magic", "Other",  "Minor",  0.6209, 0.0212, -0.6421)
+    plotEZ("Barren Reef", "Lava Magic", "Other",  "Major",  -0.5978, 0.6294, -0.0315)
+    plotEZ("Iron Chane", "Jurisdiction", "Other",  "Minor",  -0.2853, 0.2538, 0.0315)
+    plotEZ("Old Gromsh", "Psionics", "Other",  "Major",  0.1011, -0.4499, 0.3488)
+    plotEZ("Fool's Geldspiel", "Mentalism", "Other",  "Minor",  0.8316, -0.9514, 0.1198)
 
-
+//---------------------------------------------------------------------------------------------------
     // Add cities and zones to map as toggleable layer
     // https://leafletjs.com/examples/layers-control/
     var cities =  L.layerGroup(cityMarkerList).addTo(map);
-    var ezones =  L.layerGroup(cityMarkerList).addTo(map);
-    var baseMaps = {"Aerb": mapLayer,};
-    var overlayMaps = {"Cities":cities, "Exclusion Zones":ezones,};
+    var ezones =  L.layerGroup(zoneMarkerList).addTo(map);
+    var athens =  L.layerGroup(atheneumMarkerList).addTo(map);
+    var baseMaps = {"Aerb (No Labels)": mapLayerSimple,"Aerb (Low Res)": mapLayerLowQuality,"Aerb (High Res)": mapLayerHighQuality,};
+    var overlayMaps = {"Atheneums":athens,"Cities":cities, "Exclusion Zones":ezones,};
     var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 </script>
