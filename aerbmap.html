@@ -199,13 +199,13 @@ ezMarkerMap = {
 
     var cityMarkerList = [];
     function plotCity(name,xAerb,yAerb){
-        popupInfo = "<center><b>"+name+"</b></center>";
-        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIcon}).bindPopup(popupInfo).bindTooltip(name, {permanent: false, direction: "center", opacity:1, offset: [0,-8]});
+        popupInfo = "<center><small>"+name+"</small></center>";
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIcon}).bindPopup(popupInfo).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,8]});
         cityMarkerList.push(newMarker);
     }
     function plotCityCanon(name,xAerb,yAerb){
         popupInfo = "<center><b>"+name+"</b></center>";
-        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconCanon}).bindPopup(popupInfo).bindTooltip(name, {permanent: true, direction: "center", opacity:1, offset: [0,12]});
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconCanon}).bindPopup(popupInfo).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,12]});
         cityMarkerList.push(newMarker);
     }
 
@@ -456,7 +456,7 @@ ezMarkerMap = {
 
 
     // Define EZ names and positions.
-    plotEZ("Dorisopolis", "CopyClanning", "Empersoned",  "Major",  -0.5789, 0.1766, 0.4029)
+    plotEZ("Dorisopolis", "CopyClanning", "Empersoned",  "Major",  -0.57891, 0.17663, 0.40288)
     plotEZ("Cthonic", "Dungeon Creation", "Other",  "Major",  0.2911, 0.0427, -0.3337)
     plotEZ("City of Lasting Blood", "People leave blood trails.", "Other",  "Major",  0.5965, 0.0413, -0.6379)
     plotEZ("Manifest", "Mind Control", "Empersoned",  "Major",  -0.3602, 0.2971, 0.0631)
