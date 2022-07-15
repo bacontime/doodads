@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Aerb Map</title>
+    <title>Aerb Map - Looping Tile Test</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
@@ -11,7 +11,6 @@
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
         integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
         crossorigin=""></script>
-
 <style>
     html, body {
         height: 100%;
@@ -21,6 +20,7 @@
         width: 100%;
         height: 100%;
     }
+    /*The following makes the tooltips smaller and more condensed*/
     .leaflet-tooltip {
         padding: 3px 5px;
         background-color: #fff9;
@@ -29,7 +29,6 @@
         font-size: smaller;
     }
 </style>
-
 </head>
 <body>
 
@@ -37,17 +36,14 @@
 
 <script type="text/javascript">
 
-    const imgLarge = "url(aerbimg/AerbTileLarge.webp)";
-    const imgWidthPixels = 15000;//6000*4;
-    const imgHeightPixels = 8660;//3464*4;
+    const imgWidthPixels = 15588;
+    const imgHeightPixels = 9000;
     const imgHexCenterPixel_x = imgWidthPixels/3;
     const imgHexCenterPixel_y = imgHeightPixels/2;
 
-    const imgSmall = "url(aerbimg/AerbTileSmall.webp)";
-    const imgSimple = "url(aerbimg/AerbTileSimple.webp)";
 
     const maxZoom = 8;
-    const tileWidth = 1024;//default is 256
+    const tileWidth = 300;//default is 256
 
     const mapMaxResolution = (3780*1000*20)/imgHeightPixels; // meters per pixel of most zoomed in image. 3780 is height of a triangle in km
     const mapMinResolution = Math.pow(2, maxZoom) * mapMaxResolution;
@@ -56,7 +52,6 @@
 
 
 //---------------------------------------------------------------------------------------------------
-
 
     //Create a CRS with overridden zoom and scale functions.
     //This step would be unnecessary if mapMaxResolution were set to 1/imgHeightPixels,
@@ -73,10 +68,56 @@
         maxZoom: maxZoom,
     });
 
-    L.control.scale().addTo(map); //Displays a little scale bar. Miles and kilometers.
+//---------------------------------------------------------------------------------------------------
+// Use actual tiled images to loop baselayer
+// Things are complicated by the fact that looping image can't be cleanly split into squares.
+// My workaround uses horizontally overlapping strips. 
+//Currently set up to use a single image unless very zoomed in.
 
-    // Extend GridLayer to create looping tiles.
-    //Examples: https://leafletjs.com/examples/extending/extending-2-layers.html#lgridlayer-and-dom-elements
+    //Javascripts % operator apparently isn't actually a modulo 
+    Number.prototype.mod = function (n) {"use strict"; return ((this % n) + n) % n;};
+
+    L.GridLayer.LoopTile = L.GridLayer.extend({
+        createTile: function (coords, done) {
+            var tile = document.createElement('div');
+            var width = Math.pow(2, maxZoom - coords.z);
+
+            //Uncomment the following two lines to display the tile boundaries and coordinates
+            //tile.innerHTML = [coords.x, coords.y, coords.z,"<br>",width].join(', ');
+            //tile.style.outline = '1px solid blue';
+
+            if (coords.z == maxZoom){
+                stripWidth = 2000;
+                xtile = Math.floor((coords.x*tileWidth).mod(imgWidthPixels) / stripWidth);
+                xoffset = ((coords.x*tileWidth).mod(imgWidthPixels)).mod(stripWidth)
+                ytile = coords.y.mod(imgHeightPixels/tileWidth);
+                tile.style.backgroundImage = "url(aerbimg/tile/x"+xtile+"y"+ytile+".webp)";
+                tile.style.backgroundPosition= -xoffset.toString()+"px "+0+"px";
+            } else {
+                tile.style.backgroundImage = "url(aerbimg/AerbTileSmall.webp)";
+                var offsetX = -coords.x*tileWidth;
+                var offsetY = -coords.y*tileWidth;
+                tile.style.backgroundPosition= offsetX.toString()+"px "+offsetY.toString()+"px";
+                tile.style.backgroundSize=(imgWidthPixels/width).toString()+"px";
+            }
+            //need asynchronous handling because it takes time to pull up the image
+            setTimeout(function () {
+                done(null, tile);	// Syntax is 'done(error, tile)'
+            }, 0);
+            return tile;
+        },
+    });
+
+    L.gridLayer.looptile = function(opts) {return new L.GridLayer.LoopTile(opts);};
+    
+    mapLayerExperimentalStrips = L.gridLayer.looptile({
+        tileSize:tileWidth,
+        attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.',
+    }).addTo(map);
+
+//---------------------------------------------------------------------------------------------------
+// Div tiles uses to make looping base layer.
+//Examples: https://leafletjs.com/examples/extending/extending-2-layers.html#lgridlayer-and-dom-elements
     L.GridLayer.LoopImage = L.GridLayer.extend({
         createTile: function (coords, done) {
             var tile = document.createElement('div');
@@ -106,21 +147,20 @@
     mapLayerLowQuality = L.gridLayer.loopImage({
         tileSize:tileWidth,
         attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.',
-        bgImage: imgSmall,
-    }).addTo(map);
+        bgImage: "url(aerbimg/AerbTileSmall.webp)",
+    })
 
     mapLayerHighQuality = L.gridLayer.loopImage({
         tileSize:tileWidth,
         attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
-        bgImage:imgLarge,
+        bgImage: "url(aerbimg/AerbTileLarge.webp)",
     })
 
     mapLayerSimple = L.gridLayer.loopImage({
         tileSize:tileWidth,
         attribution: 'Map of Aerb from <a href=\"https://archiveofourown.org/works/11478249/chapters/25740126\">Worth the Candle</a> by Alexander Wales.', 
-        bgImage:imgSimple,
+        bgImage:"url(aerbimg/AerbTileSimple.webp)",
     })
-
 
 //---------------------------------------------------------------------------------------------------
 //Define our icons
@@ -140,8 +180,8 @@ var cityIconCanon = L.icon({
 
 var cityIconAtheneum = L.icon({
     iconUrl: 'aerbimg/markerCityAtheneum.png',
-    iconSize:     [24, 24], // size of the icon
-    iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location
+    iconSize:     [32, 32], // size of the icon
+    iconAnchor:   [16, 16], // point of the icon which will correspond to marker's location
     popupAnchor:  [0, -12] // point from which the popup should open relative to the iconAnchor
 });
 
@@ -523,9 +563,12 @@ ezMarkerMap = {
     var cities =  L.layerGroup(cityMarkerList).addTo(map);
     var ezones =  L.layerGroup(zoneMarkerList).addTo(map);
     var athens =  L.layerGroup(atheneumMarkerList).addTo(map);
-    var baseMaps = {"Aerb (No Labels)": mapLayerSimple,"Aerb (Low Res)": mapLayerLowQuality,"Aerb (High Res)": mapLayerHighQuality,};
+    var baseMaps = {"Variable Resolution": mapLayerExperimentalStrips, "No Labels": mapLayerSimple,"Low Resolution": mapLayerLowQuality,"High Resolution": mapLayerHighQuality,};
     var overlayMaps = {"Atheneums":athens,"Cities":cities, "Exclusion Zones":ezones,};
     var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+
+    L.control.scale().addTo(map); //Displays a little scale bar. Miles and kilometers.
 
 </script>
 
