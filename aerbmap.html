@@ -63,7 +63,7 @@
     var map = L.map('map', {
         crs: myCRS,
         center: [mapCenter_y, mapCenter_x],
-        zoom: maxZoom-3,
+        zoom: maxZoom-2,
         minZoom: 0,
         maxZoom: maxZoom,
     });
@@ -86,8 +86,8 @@
             //tile.innerHTML = [coords.x, coords.y, coords.z,"<br>",width].join(', ');
             //tile.style.outline = '1px solid blue';
 
+            stripWidth = 2000;
             if (coords.z == maxZoom){
-                stripWidth = 2000;
                 xtile = Math.floor((coords.x*tileWidth).mod(imgWidthPixels) / stripWidth);
                 xoffset = ((coords.x*tileWidth).mod(imgWidthPixels)).mod(stripWidth)
                 ytile = coords.y.mod(imgHeightPixels/tileWidth);
@@ -177,11 +177,22 @@ var cityIconCanon = L.icon({
     iconSize:     [12, 12], // size of the icon
     iconAnchor:   [6, 6],
 });
+var cityIconGod = L.icon({
+    iconUrl: 'aerbimg/markerCityGod.png',
+    iconSize:     [20, 20], // size of the icon
+    iconAnchor:   [10, 10],
+});
 
 var cityIconAtheneum = L.icon({
     iconUrl: 'aerbimg/markerCityAtheneum.png',
     iconSize:     [32, 32], // size of the icon
     iconAnchor:   [16, 16], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, -12] // point from which the popup should open relative to the iconAnchor
+});
+var cityIconAtheneumSat = L.icon({
+    iconUrl: 'aerbimg/markerCityAtheneumSat.png',
+    iconSize:     [24, 24], // size of the icon
+    iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location
     popupAnchor:  [0, -12] // point from which the popup should open relative to the iconAnchor
 });
 
@@ -248,11 +259,21 @@ ezMarkerMap = {
         newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconCanon}).bindPopup(popupInfo).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,12]});
         cityMarkerList.push(newMarker);
     }
+    function plotCityGod(name,xAerb,yAerb){
+        popupInfo = "<center><b>"+name+"</b></center>";
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconGod}).bindPopup(popupInfo).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,12]});
+        cityMarkerList.push(newMarker);
+    }
 
     var atheneumMarkerList = [];
     function plotCityAtheneum(name, study,xAerb,yAerb){
         popupInfo = "<center><b>"+name+"</b><br><small>"+study+"</small></center>";
         newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconAtheneum}).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,24]}).bindPopup(popupInfo);
+        atheneumMarkerList.push(newMarker);
+    }
+    function plotCityAtheneumSat(name,study,xAerb,yAerb){
+        popupInfo = "<center><b>"+name+"</b><br><small>"+study+"</small></center>";
+        newMarker = L.marker(xy(xAerb,yAerb), {icon: cityIconAtheneumSat}).bindTooltip(popupInfo, {permanent: true, direction: "center", opacity:1, offset: [0,24]}).bindPopup(popupInfo);
         atheneumMarkerList.push(newMarker);
     }
 
@@ -355,7 +376,7 @@ ezMarkerMap = {
     plotCity("Jawkward", -0.854557753, 0.4127913);
     plotCity("Bilimbamp", -0.333836343, 0.589028647);
     plotCity("Lowess Point", -0.487149574, 0.630781269);
-    plotCity("Saiga", -0.461578894, 0.630822214);
+    plotCityAtheneumSat("Saiga", 'Runeforge Satellite Campus', -0.461578894, 0.630822214);
     plotCity("Yaffalia", -0.234348556, 0.339395546);
     plotCity("Hengowon", -0.305055659, 0.263631977);
     plotCity("Ink Ongal", -0.349501309, 0.296058243);
@@ -375,14 +396,14 @@ ezMarkerMap = {
     plotCity("Brindle", -0.367159154, 0.334035046);
     plotCityCanon("Five Spires", -0.234009358, 0.052371712);
     plotCityCanon("Ludhad", -0.094128823, -0.039781198);
-    plotCityCanon("Frustbury", 0.189509987, -0.149963376);
+    plotCityGod("Frustbury", 0.189509987, -0.149963376);
     plotCityAtheneum("Scamadus", "Steel & Sweat", -0.490220974, 0.304865536);
     plotCity("Stonk", -0.527547849, 0.100304986);
     plotCity("Stonk", -0.485597349, 0.134622302);
     plotCity("Vibrant Reef", -0.578765634, 0.654778031);
     plotCityAtheneum("Crenn", "Might & Motion", 0.331905606, -0.430735359);
     plotCityAtheneum("The Buried Steppe", "Stars & Sigils", 0.583858036, 0.073495876);
-    plotCityAtheneum("Grunnings", "Stars & Sigils<br>Runeforge Satellite Campus", -0.19341353, -0.543305621);
+    plotCityAtheneumSat("Grunnings", "Runeforge Satellite Campus", -0.19341353, -0.543305621);
     plotCityCanon("Orrangush", 0.702258904, 0.079102953);
     plotCityCanon("Remar", 0.549052466, -0.669928411);
     plotCity("Krenshaw", -0.284470884, 0.10356776);
@@ -490,9 +511,9 @@ ezMarkerMap = {
     plotCity("Mannehmanu", 0.186656833, -0.220002014);
     plotCity("Linkar", 0.228722319, -0.227008832);
     plotCity("Port D", 0.232878723, 0.020234691);
-    plotCity("Buurg", 0.641056556, 0.222162407); //It looks like I accidentally move this city in the final export.
-    plotCity("Takbok", 0.579004677, -0.717426125);
-    plotCity("Nujörk", 0.408335367, -0.937429375);
+    plotCityGod("Buurg", 0.684,0.177); //It looks like I accidentally move this city in the final export.
+    plotCityGod("Takbok", 0.579004677, -0.717426125);
+    plotCityAtheneumSat("Nujörk",'Runeforge Satellite Campus', 0.408335367, -0.937429375);
 
 
     // Define EZ names and positions.
