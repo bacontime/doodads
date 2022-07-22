@@ -584,7 +584,7 @@ ezMarkerMap = {
     var cities =  L.layerGroup(cityMarkerList).addTo(map);
     var ezones =  L.layerGroup(zoneMarkerList).addTo(map);
     var athens =  L.layerGroup(atheneumMarkerList).addTo(map);
-    var baseMaps = {"Variable Resolution": mapLayerExperimentalStrips, "No Labels": mapLayerSimple,"Low Resolution": mapLayerLowQuality,"High Resolution": mapLayerHighQuality,};
+    var baseMaps = {"Labels on Basemap": mapLayerExperimentalStrips, "No Labels": mapLayerSimple,};
     var overlayMaps = {"Atheneums":athens,"Cities":cities, "Exclusion Zones":ezones,};
     var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
