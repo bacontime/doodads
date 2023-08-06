@@ -1,3 +1,6 @@
+# EDIT: Here's a solver for similar logic puzzles which has a nice UI: http://www.jsingler.de/apps/logikloeser/
+# My code below isn't super great and was made more just for the fun of making it.
+
 
 #%%
 from collections import defaultdict
