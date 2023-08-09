@@ -5,107 +5,196 @@
 <head>
 <title>RSS Feed Test</title>
 <style>
+  :root {
+    --basecolor: #fdf6e3;
+    --boxcolor: #eee8d5;
+    --feedbackcolor: #e7dfc5;
+    --accentcolor: #7a0019;
+    --bordercolor: #93a1a1;
+    --textcolor: #55525B;
+    --titlecolor: #27262b;
+  }
   .videoBlock {
-    border: 1px solid lightblue;
-    min-height: 60px;
+    border: 1px solid var(--bordercolor);
+    min-height: 65px;
+    background-color: var(--boxcolor);
+    display: flex;
   }
   .videoBlock:hover {
-    background-color: aliceblue;
+    background-color: var(--feedbackcolor);
   }
   .videoBlock a {
     text-decoration: none !important;
+    flex: 1;
+  }
+  .videoBlock a:visited {
+    color: var(--textcolor);
   }
   .videoBlock .mainlink {
     margin-bottom: 0rem;
     margin-top: 0.5rem;
     font-size: 110%;
     font-weight: bold;
+    line-height: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .videoBlock img {
     float: left;
     margin-right: 1rem;
-    height: 60px;
+    height: 65px;
   }
   .videoBlock .metadata {
-    color: lightgray;
+    color: var(--textcolor);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  </style>
+</style>
 </head>
 <body>
 
 <div id="feed"></div>
 
+
 <script>
-// THE FOLLOWING VARIABLE SHOULD BE MODIFIED TO CHANGE THE LIST OF CHANNELS SAMPLED
-// CHANNEL IDS CAN BE FOUND ON A CHANNEL VIA RIGHT-CLICK, VIEW SOURCE, CTRL-F FOR RSS
-// Look for url of the form https://www.youtube.com/feeds/videos.xml?channel_id=CHANNELID
-const channelIds = [
-  'UCcMXHcc7fikiJ-PhrGUeQoQ', // Gatis Kandis
-  'UCMy7mRjghOxB8h3nv60SU4w', // CM Koseman
-  'UC9gFih9rw0zNCK3ZtoKQQyA', // Jenna Marbles  
-  'UCZXAVdAplsu1tFZ9OqQhJFg', // Virtual Frog
-  'UCKxebVRFoRz5VSIHixMWNZg', // Alexander Wales
-  'fake' // For error testing
-]
-
-//------------------------------------------------------------------------------------
-
-const feedContainer = document.getElementById('feed');
 const proxyserver = 'https://corsproxy.io/?'
 const youtubeRSSprefix = 'https://www.youtube.com/feeds/videos.xml?channel_id=' 
 function channelIdToUrl(id){ return proxyserver + youtubeRSSprefix + id;};
 
-function formatVideoBlock(author, title, videoId, date){
+function formatVideoBlock(author, title, videoId, date, channelId){
   date = new Date(date);
   date = date.toDateString();
   return `
-    <a href="https://www.youtube.com/v/${videoId}">
-      <img src="https://i3.ytimg.com/vi/${videoId}/hqdefault.jpg"/>
+    <a href="https://www.youtube.com/watch?v=${videoId}">
+      <img src="https://i3.ytimg.com/vi/${videoId}/default.jpg"/>
       <div class="mainlink">${title}</div>
       <div class="metadata">${author} - ${date}</div>
     </a>
     `
 }
 
+const blankVideoBlock = `
+    <a href="">
+      <img src="https://i3.ytimg.com/vi/default.jpg"/>
+      <div class="mainlink">PLACEHOLDER TITLE</div>
+      <div class="metadata">CHANNEL - DATE</div>
+    </a>
+    `
 
+function buildFeed(channelIdList, containerId) {
+  const feedContainer = document.getElementById(containerId);
 
-promises = channelIds.map(id => fetch(channelIdToUrl(id))
-  .then(response => response.text())
-  .then(text => new window.DOMParser().parseFromString(text, "application/xml"))
-);
+  // Create placeholder blocks
+  channelIdList.forEach(id => {
+      videoBlock = document.createElement('div');
+      videoBlock.setAttribute('class', 'videoBlock');
+      videoBlock.innerHTML = blankVideoBlock;
+      feedContainer.appendChild(videoBlock);
+    });
+  
+  promises = channelIdList.map(id => fetch(channelIdToUrl(id))
+    .then(response => response.text())
+    .then(text => new window.DOMParser().parseFromString(text, "application/xml"))
+  );
 
-Promise.all(promises).then(data => {
-  videoList = []; 
-  //grab data for first video from each channel
-  data.forEach(feed => {
-    try{
-    item = feed.querySelector('entry');
-      title = item.querySelector('title').textContent;
-      videoId = item.querySelector('videoId').textContent;
-      date = item.querySelector('published').textContent;
-    author = feed.querySelector('title').textContent;
-    console.log(author, videoId);
-    videoList.push([author, title, videoId, date]);
-    }
-    catch (error){console.log(error)} // Just ignore the channels that weren't parsed right.
-  });
-  //sort list in reverse order by date
-  videoList.sort(function(a,b){return b[3].localeCompare(a[3]);});
-  //create a little entry for each video
-  videoList.forEach(video => {
-    videoBlock = document.createElement('div');
-    videoBlock.setAttribute('class', 'videoBlock');
-    videoBlock.innerHTML = formatVideoBlock(video[0],video[1],video[2], video[3]);
-    feedContainer.appendChild(videoBlock);
-  });
-});
-
-
-
-
-
-
-
+  Promise.all(promises).then(data => {
+    feedContainer.innerHTML = "";
+    videoList = []; 
+    //grab data for first video from each channel
+    data.forEach(feed => {
+      try{
+      item = feed.querySelector('entry');
+        title = item.querySelector('title').textContent;
+        videoId = item.querySelector('videoId').textContent;
+        date = item.querySelector('published').textContent;
+        channelId = item.querySelector('channelId').textContent;
+      author = feed.querySelector('title').textContent;
+      console.log(author, videoId);
+      videoList.push([author, title, videoId, date, channelId]);
+      }
+      catch (error){console.log(error)} // Just ignore the channels that weren't parsed right.
+    });
+    //sort list in reverse order by date
+    videoList.sort(function(a,b){return b[3].localeCompare(a[3]);});
+    //create a little entry for each video
+    videoList.forEach(video => {
+      videoBlock = document.createElement('div');
+      videoBlock.setAttribute('class', 'videoBlock');
+      videoBlock.innerHTML = formatVideoBlock(video[0],video[1],video[2], video[3], video[4]);
+      feedContainer.appendChild(videoBlock);
+    });
+  }); 
+}
 </script>
+
+
+
+
+
+
+<h2>Example Feeds:</h2>
+
+<h3>A Man Walking About Describing Things</h3>
+<div id="feed_walkingMen" class="youtubeFeed"></div>
+<script>
+channels_walkingMen = [
+  'UCUMQFUkgaEE68_ujIdW2wAw', // Dime Store Adventures: Investigating local history and folklore!
+  'UCBa659QWEk1AI4Tg--mrJ2A', // Tom Scott: Amazing Places
+  'UCbCq5Y0WPGimG2jNXhoQxGw', // Atomic Frontier: Tom Scott's Doppelganger
+  'UCbbQalJ4OaC0oQ0AqRaOJ9g', // Jay Foreman: Map Men and Unfinished London
+  'UC2LVhJH_9cT2XKp0VAfsKOQ', // Tim Traveler: Uninteresting Places
+  'UC4a9LfdavRlVMaSSWFdIciA', // Rob Words
+];
+buildFeed(channels_walkingMen, "feed_walkingMen");
+</script>
+
+
+
+<h3>Math</h3>
+<div id="feed_math" class="youtubeFeed"></div>
+<script>
+channels_math = [
+  'UCYO_jab_esuFRV4b17AJtAw', // 3blue1brown: Beautiful theorems
+  'UCoxcjq-8xIDTYp3uz647V5A', // Numberphile: Videos about numbers
+  'UCSju5G2aFaWMqn-_0YBtq5A', // Stand Up Maths: More videos about numbers. Took me a while to realize it's not the same channel as Numberphile.
+  'UCK8XIGR5kRidIw2fWqwyHRA', // Reducible
+  'UC4zzTEL5tuIgGMvzjk1Ozbg', // Henry Segerman
+  'UCSIvk78tK2TiviLQn4fSHaw', // Up and Atom
+
+];
+buildFeed(channels_math, "feed_math");  
+</script>
+
+
+
+<h3>Cute Animals</h3>
+<div id="feed_animals" class="youtubeFeed"></div>
+<script>
+channels_animals = [
+  'UCNo_xQ7NvTr31naPAcjQWjg', // OctoLab: Chill vids of little octodudes
+  'UCDYyCQAk60CqabvkL5gU3Mw', // Kotumet: Otters Pets
+  'UCrJH2Wy7PmCiitXKJ21yh4w', // Ninja Frog
+  'UCsFgbVuhRrPV5FqyN7kOD8g', // Bald Eagel Cam
+  'UCPPjuJTt9jiOZNHScvEmvRg', // Seducktive
+  'UCWIxPuO_0emPbma8UlOc3JQ', // Cruiser (lots of bear videos)
+  'UCpjhDz9Sqn-6h1ZwtvUiA2g', // Cheryl B (ditto)
+  'UCWUH_hdDfzi98i3clGbh_Ww', // Mr Frog
+  'UCKwcMBhbzQXgSM1T3TvHmiA', // Homura Ham
+  'UCnUdaxbBMPQ9o9KVz7Oa6eQ', // Apollo the Parrot
+  'UCv3mh2P-q3UCtR9-2q8B-ZA', // Urban Rescue Ranch *
+  'UCz6yuUg6N0iRiFhCLmXrNJQ', // LOUTRE (otter giving birth)
+  'UCj2Eeg01Mn5WmcXxt695fUg', // Brady Brandwood (Leon the Lobster)
+  'UC6q7I1DD2Jv5Ur9UEIavIrA', // David M Bird
+];
+buildFeed(channels_animals, "feed_animals");
+</script>>
+
+  
+
+  
 </body>
 </html>
