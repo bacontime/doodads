@@ -32,26 +32,16 @@ main {
   padding: 20px 0 18px;
 }
 .topbar {
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr) auto;
-  gap: 16px;
-  align-items: end;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 h1 {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: clamp(1.35rem, 2vw, 2rem);
   font-weight: 730;
   letter-spacing: 0;
 }
-.subtitle {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.94rem;
-  line-height: 1.45;
-}
 .readout {
-  display: grid;
+  display: none;
   grid-template-columns: repeat(4, minmax(112px, 1fr));
   gap: 8px;
   min-width: min(620px, 100%);
@@ -59,7 +49,6 @@ h1 {
 .metric {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 8px;
   padding: 9px 10px;
   min-height: 58px;
 }
@@ -79,7 +68,6 @@ h1 {
 }
 .viewer {
   border: 1px solid var(--line);
-  border-radius: 8px;
   background: #0b1017;
   overflow: hidden;
 }
@@ -100,7 +88,6 @@ canvas {
   left: 10px;
   bottom: 10px;
   padding: 7px 9px;
-  border-radius: 6px;
   background: rgba(10, 13, 18, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #d9e5f2;
@@ -146,7 +133,6 @@ input[type="number"] {
   color: var(--text);
   background: var(--panel-2);
   border: 1px solid var(--line);
-  border-radius: 7px;
   padding: 7px 9px;
   font: inherit;
   font-variant-numeric: tabular-nums;
@@ -161,7 +147,6 @@ input[type="number"] {
   color: var(--text);
   background: var(--panel-2);
   border: 1px solid var(--line);
-  border-radius: 7px;
   font-size: 0.9rem;
   text-transform: none;
   letter-spacing: 0;
@@ -214,7 +199,6 @@ input[type="number"] {
 button {
   min-height: 34px;
   border: 1px solid var(--line);
-  border-radius: 7px;
   background: var(--panel-2);
   color: var(--text);
   padding: 6px 10px;
@@ -226,10 +210,6 @@ button:hover, button:focus-visible {
   border-color: var(--accent);
   outline: none;
 }
-button.active {
-  border-color: var(--accent-2);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-2) 70%, transparent);
-}
 .legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -238,17 +218,48 @@ button.active {
 }
 .legend-block {
   border: 1px solid var(--line);
-  border-radius: 8px;
   background: var(--panel);
   padding: 10px;
 }
 .ramp {
   height: 13px;
-  border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
-.ramp.water { background: linear-gradient(90deg, #06182c, #0b3765, #177da1, #72c6d9); }
-.ramp.land { background: linear-gradient(90deg, #806846, #b99d63, #7e9b52, #9aa06f, #f0f2ea); }
+.ramp.water, .ramp.land { background: var(--panel-2); }
+.scale-ticks {
+  position: relative;
+  min-height: 28px;
+}
+.scale-tick {
+  position: absolute;
+  left: var(--position);
+  top: 0;
+  width: 1px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.46);
+  transform: translateX(-50%);
+}
+.scale-tick::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.scale-tick.edge-start::after {
+  left: 0;
+  transform: none;
+}
+.scale-tick.edge-end::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
 .legend-row {
   display: flex;
   justify-content: space-between;
@@ -266,7 +277,6 @@ footer {
 a { color: #8fd9ee; }
 @media (max-width: 820px) {
   main { width: min(100vw - 18px, 1240px); padding-top: 10px; }
-  .topbar { grid-template-columns: 1fr; align-items: start; }
   .readout { grid-template-columns: 1fr 1fr; min-width: 0; }
   .controls { grid-template-columns: 1fr; }
   .legend { grid-template-columns: 1fr; }
@@ -274,7 +284,8 @@ a { color: #8fd9ee; }
 @media (max-width: 520px) {
   .readout { grid-template-columns: 1fr; }
   .metric { min-height: 0; }
-  .presets button { flex: 1 1 calc(50% - 7px); }
+  .presets button { flex: 1 1 calc((100% - 14px) / 3); }
+  .presets button.reset-action { flex: 1 0 100%; }
 }
 </style>
 </head>
@@ -283,7 +294,6 @@ a { color: #8fd9ee; }
   <section class="topbar" aria-label="Overview">
     <div>
       <h1>World Sea Level Viewer</h1>
-      <p class="subtitle">ETOPO5 global relief, including seafloors. Move sea level below zero to expose shelves, ridges, and basins that are underwater today.</p>
     </div>
     <div class="readout">
       <div class="metric"><span>Sea level</span><strong id="levelText">0 m</strong></div>
@@ -301,11 +311,11 @@ a { color: #8fd9ee; }
     <div class="controls">
       <div>
         <label for="levelRange">Selected sea level, meters relative to today</label>
-        <input id="levelRange" type="range" min="-9027" max="9027" step="10" value="0" disabled>
+        <input id="levelRange" type="range" min="-9027" max="9027" step="1" value="0" disabled>
       </div>
       <div>
         <label for="levelInput">Meters</label>
-        <input id="levelInput" type="number" min="-9027" max="9027" step="10" value="0" disabled>
+        <input id="levelInput" type="number" min="-9027" max="9027" step="1" value="0" disabled>
       </div>
       <div>
         <span class="control-label">Heightmap</span>
@@ -316,23 +326,23 @@ a { color: #8fd9ee; }
         </label>
       </div>
     </div>
-    <div class="presets" id="presets" aria-label="Sea level presets"></div>
+    <div class="presets" id="presets" aria-label="Sea level adjustments"></div>
   </section>
 
   <section class="legend" aria-label="Color legend">
     <div class="legend-block">
       <div class="ramp water"></div>
-      <div class="legend-row"><span>Deep water</span><span>Shallow water</span></div>
+      <div class="scale-ticks" id="waterScaleTicks" aria-label="Water depth scale"></div>
     </div>
     <div class="legend-block">
       <div class="ramp land"></div>
-      <div class="legend-row"><span>Low exposed terrain</span><span>High terrain</span></div>
+      <div class="scale-ticks" id="landScaleTicks" aria-label="Land height scale"></div>
     </div>
   </section>
 
   <footer>
     Generated by ChatGPT 5.5. 
-    Source: NOAA National Geophysical Data Center, ETOPO5 5-minute gridded global relief data. Sibling heightmap asset: <a href="world-heightmap-noaa-etopo5.png">world-heightmap-noaa-etopo5.png</a>, averaged to 1080 x 540 cells and rotated to 180W..180E. Original download: <a href="https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO5/TOPO/ETOPO5/ETOPO5.DOS">ETOPO5.DOS</a>. Values are approximate and best for visualization, not navigation or analysis.
+    Source: NOAA National Geophysical Data Center, ETOPO5 5-minute gridded global relief data. Original download: <a href="https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO5/TOPO/ETOPO5/ETOPO5.DOS">ETOPO5.DOS</a>.
   </footer>
 </main>
 
@@ -342,7 +352,16 @@ const WIDTH = 1080;
 const HEIGHT = 540;
 const MIN_ELEV = -9027;
 const MAX_ELEV = 9027;
-const PRESETS = [-6000,-4000,-3000,-1000,-120,0,70,500,1000,3000];
+const LEVEL_ACTIONS = [
+  { label: "-1000m", delta: -1000 },
+  { label: "-100m", delta: -100 },
+  { label: "-10m", delta: -10 },
+  { label: "Reset Sea Level", level: 0 },
+  { label: "+10m", delta: 10 },
+  { label: "+100m", delta: 100 },
+  { label: "+1000m", delta: 1000 }
+];
+const SLIDER_STEP = 10;
 const LIGHT_ANGLE = Math.atan2(0.8, 0.6);
 const LIGHT_INTENSITY = 1 / 1000;
 const LIGHT_BASE = 1.0;
@@ -369,6 +388,10 @@ const waterText = document.getElementById("waterText");
 const landText = document.getElementById("landText");
 const presets = document.getElementById("presets");
 const cursorText = document.getElementById("cursorText");
+const waterRamp = document.querySelector(".ramp.water");
+const landRamp = document.querySelector(".ramp.land");
+const waterScaleTicks = document.getElementById("waterScaleTicks");
+const landScaleTicks = document.getElementById("landScaleTicks");
 let currentSea = 0;
 let isInverted = false;
 let elevations = null;
@@ -481,31 +504,23 @@ function mix(a, b, t) {
   return Math.round(a + (b - a) * t);
 }
 
-function ramp(stops, t) {
-  t = clamp(t, 0, 1);
-  const scaled = t * (stops.length - 1);
-  const i = Math.min(stops.length - 2, Math.floor(scaled));
-  const local = scaled - i;
-  const a = stops[i];
-  const b = stops[i + 1];
-  return [mix(a[0], b[0], local), mix(a[1], b[1], local), mix(a[2], b[2], local)];
-}
-
 const waterStops = [
-  [4, 19, 36],
-  [8, 48, 89],
-  [16, 105, 139],
-  [94, 177, 193],
-  [166, 221, 224]
+  { depth: 0, rgb: [166, 221, 224] },
+  { depth: 50, rgb: [94, 177, 193] },
+  { depth: 1000, rgb: [16, 105, 139] },
+  { depth: 3000, rgb: [8, 70, 108] },
+  { depth: 6000, rgb: [8, 48, 89] },
+  { depth: WATER_DEPTH_LUT_MAX, rgb: [4, 19, 36] }
 ];
 
 const landStops = [
-  [111, 92, 61],
-  [177, 146, 85],
-  [126, 154, 80],
-  [91, 135, 82],
-  [139, 132, 110],
-  [236, 238, 231]
+  // { height: 0, rgb: [82, 129, 75] },
+  { height: 0, rgb: [61, 117, 67] },
+  { height: 800, rgb: [104, 133, 70] },
+  { height: 2000, rgb: [142, 134, 99] },
+  { height: 3000, rgb: [173, 169, 154] },
+  { height: 4000, rgb: [220, 223, 216] },
+  { height: LAND_HEIGHT_LUT_MAX, rgb: [247, 248, 243] }
 ];
 
 function prepareColorLuts() {
@@ -514,12 +529,12 @@ function prepareColorLuts() {
   exposedLandColorLut = new Uint8Array((LAND_HEIGHT_LUT_MAX + 1) * RGB_STRIDE);
 
   for (let depth = 0; depth <= WATER_DEPTH_LUT_MAX; depth++) {
-    const rgb = ramp(waterStops, 1 - Math.pow(depth / WATER_DEPTH_LUT_MAX, 0.42));
+    const rgb = rampByDepth(waterStops, depth);
     writeColorLut(waterColorLut, depth, rgb);
   }
 
   for (let height = 0; height <= LAND_HEIGHT_LUT_MAX; height++) {
-    const rgb = ramp(landStops, Math.pow(height / LAND_HEIGHT_LUT_MAX, 0.36));
+    const rgb = rampByHeight(landStops, height);
     writeColorLut(landColorLut, height, rgb);
     writeColorLut(exposedLandColorLut, height, [
       mix(rgb[0], 198, 0.28),
@@ -527,6 +542,103 @@ function prepareColorLuts() {
       mix(rgb[2], 123, 0.28)
     ]);
   }
+
+  renderColormapLegends();
+}
+
+function rampByDepth(stops, depth) {
+  if (depth <= stops[0].depth) return stops[0].rgb;
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i];
+    const b = stops[i + 1];
+    if (depth <= b.depth) {
+      const local = (depth - a.depth) / (b.depth - a.depth);
+      return [mix(a.rgb[0], b.rgb[0], local), mix(a.rgb[1], b.rgb[1], local), mix(a.rgb[2], b.rgb[2], local)];
+    }
+  }
+  return stops[stops.length - 1].rgb;
+}
+
+function rampByHeight(stops, height) {
+  if (height <= stops[0].height) return stops[0].rgb;
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i];
+    const b = stops[i + 1];
+    if (height <= b.height) {
+      const local = (height - a.height) / (b.height - a.height);
+      return [mix(a.rgb[0], b.rgb[0], local), mix(a.rgb[1], b.rgb[1], local), mix(a.rgb[2], b.rgb[2], local)];
+    }
+  }
+  return stops[stops.length - 1].rgb;
+}
+
+function renderColormapLegends() {
+  if (waterRamp) waterRamp.style.background = buildWaterLegendGradient();
+  if (landRamp) landRamp.style.background = buildLandLegendGradient();
+  renderScaleTicks(waterScaleTicks, waterStops, (stop) => (1 - stop.depth / WATER_DEPTH_LUT_MAX) * 100, (stop) => formatScaleDistance(stop.depth));
+  renderScaleTicks(landScaleTicks, landStops, (stop) => (stop.height / LAND_HEIGHT_LUT_MAX) * 100, (stop) => formatScaleDistance(stop.height));
+}
+
+function renderScaleTicks(container, stops, positionFor, labelFor) {
+  if (!container) return;
+  container.replaceChildren();
+
+  for (const stop of stops) {
+    if (stop.depth === 0 || stop.height === 0) continue;
+    const position = clamp(positionFor(stop), 0, 100);
+    const label = labelFor(stop);
+    const tick = document.createElement("div");
+    tick.className = "scale-tick";
+    if (position <= 4) tick.classList.add("edge-start");
+    if (position >= 96) tick.classList.add("edge-end");
+    tick.style.setProperty("--position", `${formatPercent(position)}`);
+    tick.dataset.label = label;
+    tick.title = label;
+    container.appendChild(tick);
+  }
+}
+
+function buildWaterLegendGradient() {
+  const samples = 12;
+  const stops = [];
+  for (let i = 0; i < samples; i++) {
+    const position = i / (samples - 1);
+    const depth = Math.round((1 - position) * WATER_DEPTH_LUT_MAX);
+    stops.push(`${lutColorCss(waterColorLut, depth)} ${formatPercent(position * 100)}`);
+  }
+  return `linear-gradient(90deg, ${stops.join(", ")})`;
+}
+
+function buildLandLegendGradient() {
+  const stops = landStops.map((stop) => {
+    const position = (stop.height / LAND_HEIGHT_LUT_MAX) * 100;
+    return `${rgbCss(stop.rgb)} ${formatPercent(position)}`;
+  });
+  return `linear-gradient(90deg, ${stops.join(", ")})`;
+}
+
+function lutColorCss(lut, index) {
+  const p = index * RGB_STRIDE;
+  return rgbCss([lut[p], lut[p + 1], lut[p + 2]]);
+}
+
+function rgbCss(rgb) {
+  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+}
+
+function formatMeters(value) {
+  return `${value.toLocaleString()} m`;
+}
+
+function formatScaleDistance(value) {
+  if (Math.abs(value) >= 1000) {
+    return `${Number((value / 1000).toFixed(1))} km`;
+  }
+  return formatMeters(value);
+}
+
+function formatPercent(value) {
+  return `${Number(value.toFixed(2))}%`;
 }
 
 function writeColorLut(lut, index, rgb) {
@@ -572,18 +684,22 @@ function render(sea) {
   const waterPct = waterLookup[seaIndex];
   waterText.textContent = `${waterPct.toFixed(1)}%`;
   landText.textContent = `${(100 - waterPct).toFixed(1)}%`;
-  for (const button of presets.children) {
-    button.classList.toggle("active", Number(button.dataset.level) === sea);
-  }
 }
 
-function setSeaLevel(raw) {
-  const rounded = Math.round(Number(raw) / 10) * 10;
-  const sea = clamp(Number.isFinite(rounded) ? rounded : 0, MIN_ELEV, MAX_ELEV);
+function setSeaLevel(raw, immediate = false) {
+  const parsed = Number(raw);
+  const sea = clamp(Number.isFinite(parsed) ? Math.round(parsed) : 0, MIN_ELEV, MAX_ELEV);
   currentSea = sea;
   levelRange.value = String(sea);
   levelInput.value = String(sea);
-  scheduleRender(sea);
+  if (immediate) render(sea);
+  else scheduleRender(sea);
+}
+
+function setSeaLevelFromSlider(raw) {
+  const parsed = Number(raw);
+  const stepped = Number.isFinite(parsed) ? Math.round(parsed / SLIDER_STEP) * SLIDER_STEP : 0;
+  setSeaLevel(stepped);
 }
 
 function setInverted(enabled) {
@@ -594,7 +710,8 @@ function setInverted(enabled) {
 function scheduleRender(sea) {
   pendingSea = sea;
   if (renderFrame) return;
-  renderFrame = requestAnimationFrame(() => {
+  const scheduler = window.requestAnimationFrame || ((callback) => window.setTimeout(callback, 0));
+  renderFrame = scheduler(() => {
     renderFrame = 0;
     render(pendingSea);
   });
@@ -609,19 +726,23 @@ function setControlsEnabled(enabled) {
   }
 }
 
-for (const level of PRESETS) {
+for (const action of LEVEL_ACTIONS) {
   const button = document.createElement("button");
-  const label = level === 0 ? "Today" : `${level > 0 ? "+" : ""}${level.toLocaleString()} m`;
   button.type = "button";
-  button.textContent = label;
-  button.dataset.level = String(level);
-  button.title = `Set sea level to ${label}`;
+  button.textContent = action.label;
+  if (action.level === 0) button.classList.add("reset-action");
+  button.title = action.delta
+    ? `Adjust sea level by ${action.label}`
+    : "Reset sea level to 0m";
   button.disabled = true;
-  button.addEventListener("click", () => setSeaLevel(level));
+  button.addEventListener("click", () => {
+    const nextLevel = action.delta ? currentSea + action.delta : action.level;
+    setSeaLevel(nextLevel);
+  });
   presets.appendChild(button);
 }
 
-levelRange.addEventListener("input", () => setSeaLevel(levelRange.value));
+levelRange.addEventListener("input", () => setSeaLevelFromSlider(levelRange.value));
 levelInput.addEventListener("change", () => setSeaLevel(levelInput.value));
 levelInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") setSeaLevel(levelInput.value);
@@ -653,7 +774,7 @@ function initializeHeightmap() {
     elevations = decodeHeightmapImage(heightmapImage);
     prepareDerivedData();
     setControlsEnabled(true);
-    setSeaLevel(0);
+    setSeaLevel(0, true);
   } catch (error) {
     console.error(error);
     modeText.textContent = "Missing";
