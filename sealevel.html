@@ -406,8 +406,8 @@ function prepareDerivedData() {
       const dy = elevations[yp * WIDTH + x] - elevations[ym * WIDTH + x];
       const slope = Math.sqrt(dx * dx + dy * dy);
       const slopeShade = Math.min(0.12, slope / 70000);
-      const light = (-dx * 0.0018 - dy * 0.0024) + 0.5;
-      const invertedLight = (dx * 0.0018 + dy * 0.0024) + 0.5;
+      const light = (dx * 0.0018 + dy * 0.0024) + 0.5;
+      const invertedLight = (-dx * 0.0018 - dy * 0.0024) + 0.5;
       shade[idx] = Math.max(0.58, Math.min(1.18, light - slopeShade));
       invertedShade[idx] = Math.max(0.58, Math.min(1.18, invertedLight - slopeShade));
     }
