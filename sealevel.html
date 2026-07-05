@@ -348,8 +348,13 @@ const LIGHT_INTENSITY = 1 / 1000;
 const LIGHT_BASE = 1.0;
 const LIGHT_MIN = 0.58;
 const LIGHT_MAX = 1.18;
+const LIGHT_SCALE = 256;
 const LIGHT_X = Math.cos(LIGHT_ANGLE);
 const LIGHT_Y = Math.sin(LIGHT_ANGLE);
+const ELEVATION_RANGE = MAX_ELEV - MIN_ELEV + 1;
+const RGB_STRIDE = 3;
+const WATER_DEPTH_LUT_MAX = 11000;
+const LAND_HEIGHT_LUT_MAX = 8500;
 
 const canvas = document.getElementById("map");
 const ctx = canvas.getContext("2d", { alpha: false });
@@ -367,10 +372,20 @@ const cursorText = document.getElementById("cursorText");
 let currentSea = 0;
 let isInverted = false;
 let elevations = null;
+let invertedElevations = null;
 let shade = null;
 let invertedShade = null;
 let rowWeights = null;
+let waterCoverByLevel = null;
+let invertedWaterCoverByLevel = null;
+let waterColorLut = null;
+let landColorLut = null;
+let exposedLandColorLut = null;
 let totalWeight = 0;
+let pendingSea = 0;
+let renderFrame = 0;
+
+initializeImageAlpha();
 
 function decodeHeightmapImage(img) {
   if (img.naturalWidth !== WIDTH || img.naturalHeight !== HEIGHT) {
@@ -389,10 +404,21 @@ function decodeHeightmapImage(img) {
   return values;
 }
 
+function initializeImageAlpha() {
+  const pixels = image.data;
+  for (let p = 3; p < pixels.length; p += 4) {
+    pixels[p] = 255;
+  }
+}
+
 function prepareDerivedData() {
-  shade = new Float32Array(WIDTH * HEIGHT);
-  invertedShade = new Float32Array(WIDTH * HEIGHT);
+  const cellCount = WIDTH * HEIGHT;
+  invertedElevations = new Int16Array(cellCount);
+  shade = new Uint16Array(cellCount);
+  invertedShade = new Uint16Array(cellCount);
   rowWeights = new Float32Array(HEIGHT);
+  const normalElevationWeights = new Float64Array(ELEVATION_RANGE);
+  const invertedElevationWeights = new Float64Array(ELEVATION_RANGE);
   totalWeight = 0;
 
   for (let y = 0; y < HEIGHT; y++) {
@@ -409,20 +435,42 @@ function prepareDerivedData() {
       const xm = (x + WIDTH - 1) % WIDTH;
       const xp = (x + 1) % WIDTH;
       const idx = y * WIDTH + x;
+      const elev = elevations[idx];
+      const invertedElev = -elev;
       const dx = elevations[y * WIDTH + xp] - elevations[y * WIDTH + xm];
       const dy = elevations[yp * WIDTH + x] - elevations[ym * WIDTH + x];
-      shade[idx] = calculateLight(dx, dy, 1);
-      invertedShade[idx] = calculateLight(dx, dy, -1);
+      invertedElevations[idx] = invertedElev;
+      normalElevationWeights[elevationIndex(elev)] += rowWeights[y];
+      invertedElevationWeights[elevationIndex(invertedElev)] += rowWeights[y];
+      shade[idx] = calculateLightScale(dx, dy, 1);
+      invertedShade[idx] = calculateLightScale(dx, dy, -1);
     }
   }
+
+  waterCoverByLevel = buildWaterCoverLookup(normalElevationWeights);
+  invertedWaterCoverByLevel = buildWaterCoverLookup(invertedElevationWeights);
 }
 
-function calculateLight(dx, dy, direction) {
+function calculateLightScale(dx, dy, direction) {
   // const slope = Math.sqrt(dx * dx + dy * dy);
   // const slopeShade = Math.min(0.12, slope / 70000);
   const directionalLight = (dx * LIGHT_X + dy * LIGHT_Y) * LIGHT_INTENSITY * direction;
-  return clamp(LIGHT_BASE + directionalLight, LIGHT_MIN, LIGHT_MAX);
-  // return clamp(LIGHT_BASE + directionalLight - slopeShade, LIGHT_MIN, LIGHT_MAX);
+  return Math.round(clamp(LIGHT_BASE + directionalLight, LIGHT_MIN, LIGHT_MAX) * LIGHT_SCALE);
+  // return Math.round(clamp(LIGHT_BASE + directionalLight - slopeShade, LIGHT_MIN, LIGHT_MAX) * LIGHT_SCALE);
+}
+
+function elevationIndex(elev) {
+  return Math.min(ELEVATION_RANGE - 1, Math.max(0, elev - MIN_ELEV));
+}
+
+function buildWaterCoverLookup(elevationWeights) {
+  const lookup = new Float32Array(ELEVATION_RANGE);
+  let coveredWeight = 0;
+  for (let i = 0; i < ELEVATION_RANGE; i++) {
+    coveredWeight += elevationWeights[i];
+    lookup[i] = (coveredWeight / totalWeight) * 100;
+  }
+  return lookup;
 }
 
 function clamp(value, min, max) {
@@ -460,53 +508,68 @@ const landStops = [
   [236, 238, 231]
 ];
 
-function colorFor(elev, sea, light) {
-  let rgb;
-  if (elev <= sea) {
-    const depth = sea - elev;
-    rgb = ramp(waterStops, 1 - Math.pow(clamp(depth / 11000, 0, 1), 0.42));
-  } else {
-    const heightAboveSea = elev - sea;
-    rgb = ramp(landStops, Math.pow(clamp(heightAboveSea / 8500, 0, 1), 0.36));
-    if (elev < 0 && sea < 0) {
-      rgb[0] = mix(rgb[0], 198, 0.28);
-      rgb[1] = mix(rgb[1], 174, 0.28);
-      rgb[2] = mix(rgb[2], 123, 0.28);
-    }
+function prepareColorLuts() {
+  waterColorLut = new Uint8Array((WATER_DEPTH_LUT_MAX + 1) * RGB_STRIDE);
+  landColorLut = new Uint8Array((LAND_HEIGHT_LUT_MAX + 1) * RGB_STRIDE);
+  exposedLandColorLut = new Uint8Array((LAND_HEIGHT_LUT_MAX + 1) * RGB_STRIDE);
+
+  for (let depth = 0; depth <= WATER_DEPTH_LUT_MAX; depth++) {
+    const rgb = ramp(waterStops, 1 - Math.pow(depth / WATER_DEPTH_LUT_MAX, 0.42));
+    writeColorLut(waterColorLut, depth, rgb);
   }
-  return [
-    clamp(Math.round(rgb[0] * light), 0, 255),
-    clamp(Math.round(rgb[1] * light), 0, 255),
-    clamp(Math.round(rgb[2] * light), 0, 255)
-  ];
+
+  for (let height = 0; height <= LAND_HEIGHT_LUT_MAX; height++) {
+    const rgb = ramp(landStops, Math.pow(height / LAND_HEIGHT_LUT_MAX, 0.36));
+    writeColorLut(landColorLut, height, rgb);
+    writeColorLut(exposedLandColorLut, height, [
+      mix(rgb[0], 198, 0.28),
+      mix(rgb[1], 174, 0.28),
+      mix(rgb[2], 123, 0.28)
+    ]);
+  }
+}
+
+function writeColorLut(lut, index, rgb) {
+  const p = index * RGB_STRIDE;
+  lut[p] = rgb[0];
+  lut[p + 1] = rgb[1];
+  lut[p + 2] = rgb[2];
 }
 
 function render(sea) {
   if (!elevations) return;
   const pixels = image.data;
-  let waterWeight = 0;
+  const activeElevations = isInverted ? invertedElevations : elevations;
   const activeShade = isInverted ? invertedShade : shade;
+  const waterLookup = isInverted ? invertedWaterCoverByLevel : waterCoverByLevel;
+  const seaIndex = elevationIndex(sea);
+  const seaBelowZero = sea < 0;
 
-  for (let y = 0; y < HEIGHT; y++) {
-    const weight = rowWeights[y];
-    const row = y * WIDTH;
-    for (let x = 0; x < WIDTH; x++) {
-      const idx = row + x;
-      const elev = isInverted ? -elevations[idx] : elevations[idx];
-      if (elev <= sea) waterWeight += weight;
-      const [r, g, b] = colorFor(elev, sea, activeShade[idx]);
-      const p = idx * 4;
-      pixels[p] = r;
-      pixels[p + 1] = g;
-      pixels[p + 2] = b;
-      pixels[p + 3] = 255;
+  for (let idx = 0, p = 0; idx < activeElevations.length; idx++, p += 4) {
+    const elev = activeElevations[idx];
+    const light = activeShade[idx];
+    let lut;
+    let colorIndex;
+
+    if (elev <= sea) {
+      const depth = sea - elev;
+      colorIndex = Math.min(WATER_DEPTH_LUT_MAX, depth) * RGB_STRIDE;
+      lut = waterColorLut;
+    } else {
+      const heightAboveSea = elev - sea;
+      colorIndex = Math.min(LAND_HEIGHT_LUT_MAX, heightAboveSea) * RGB_STRIDE;
+      lut = seaBelowZero && elev < 0 ? exposedLandColorLut : landColorLut;
     }
+
+    pixels[p] = (lut[colorIndex] * light + 128) >> 8;
+    pixels[p + 1] = (lut[colorIndex + 1] * light + 128) >> 8;
+    pixels[p + 2] = (lut[colorIndex + 2] * light + 128) >> 8;
   }
 
   ctx.putImageData(image, 0, 0);
   levelText.textContent = `${sea.toLocaleString()} m`;
   modeText.textContent = isInverted ? "Inverted" : "Normal";
-  const waterPct = (waterWeight / totalWeight) * 100;
+  const waterPct = waterLookup[seaIndex];
   waterText.textContent = `${waterPct.toFixed(1)}%`;
   landText.textContent = `${(100 - waterPct).toFixed(1)}%`;
   for (const button of presets.children) {
@@ -520,12 +583,21 @@ function setSeaLevel(raw) {
   currentSea = sea;
   levelRange.value = String(sea);
   levelInput.value = String(sea);
-  render(sea);
+  scheduleRender(sea);
 }
 
 function setInverted(enabled) {
   isInverted = enabled;
-  render(currentSea);
+  scheduleRender(currentSea);
+}
+
+function scheduleRender(sea) {
+  pendingSea = sea;
+  if (renderFrame) return;
+  renderFrame = requestAnimationFrame(() => {
+    renderFrame = 0;
+    render(pendingSea);
+  });
 }
 
 function setControlsEnabled(enabled) {
@@ -577,6 +649,7 @@ canvas.addEventListener("mouseleave", () => {
 
 function initializeHeightmap() {
   try {
+    prepareColorLuts();
     elevations = decodeHeightmapImage(heightmapImage);
     prepareDerivedData();
     setControlsEnabled(true);
