@@ -343,6 +343,13 @@ const HEIGHT = 540;
 const MIN_ELEV = -9027;
 const MAX_ELEV = 9027;
 const PRESETS = [-6000,-4000,-3000,-1000,-120,0,70,500,1000,3000];
+const LIGHT_ANGLE = Math.atan2(0.8, 0.6);
+const LIGHT_INTENSITY = 1 / 1000;
+const LIGHT_BASE = 1.0;
+const LIGHT_MIN = 0.58;
+const LIGHT_MAX = 1.18;
+const LIGHT_X = Math.cos(LIGHT_ANGLE);
+const LIGHT_Y = Math.sin(LIGHT_ANGLE);
 
 const canvas = document.getElementById("map");
 const ctx = canvas.getContext("2d", { alpha: false });
@@ -404,14 +411,18 @@ function prepareDerivedData() {
       const idx = y * WIDTH + x;
       const dx = elevations[y * WIDTH + xp] - elevations[y * WIDTH + xm];
       const dy = elevations[yp * WIDTH + x] - elevations[ym * WIDTH + x];
-      const slope = Math.sqrt(dx * dx + dy * dy);
-      const slopeShade = Math.min(0.12, slope / 70000);
-      const light = (dx * 0.0018 + dy * 0.0024) + 0.5;
-      const invertedLight = (-dx * 0.0018 - dy * 0.0024) + 0.5;
-      shade[idx] = Math.max(0.58, Math.min(1.18, light - slopeShade));
-      invertedShade[idx] = Math.max(0.58, Math.min(1.18, invertedLight - slopeShade));
+      shade[idx] = calculateLight(dx, dy, 1);
+      invertedShade[idx] = calculateLight(dx, dy, -1);
     }
   }
+}
+
+function calculateLight(dx, dy, direction) {
+  // const slope = Math.sqrt(dx * dx + dy * dy);
+  // const slopeShade = Math.min(0.12, slope / 70000);
+  const directionalLight = (dx * LIGHT_X + dy * LIGHT_Y) * LIGHT_INTENSITY * direction;
+  return clamp(LIGHT_BASE + directionalLight, LIGHT_MIN, LIGHT_MAX);
+  // return clamp(LIGHT_BASE + directionalLight - slopeShade, LIGHT_MIN, LIGHT_MAX);
 }
 
 function clamp(value, min, max) {
