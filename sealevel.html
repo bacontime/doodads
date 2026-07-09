@@ -311,11 +311,11 @@ a { color: #8fd9ee; }
     <div class="controls">
       <div>
         <label for="levelRange">Adjusted sea level, meters relative to today's</label>
-        <input id="levelRange" type="range" min="-9027" max="9027" step="1" value="0" disabled>
+        <input id="levelRange" type="range" min="-10000" max="10000" step="1" value="0" disabled>
       </div>
       <div>
         <label for="levelInput">Meters</label>
-        <input id="levelInput" type="number" min="-9027" max="9027" step="1" value="0" disabled>
+        <input id="levelInput" type="number" min="-10000" max="10000" step="1" value="0" disabled>
       </div>
       <div>
         <span class="control-label">Heightmap</span>
@@ -346,12 +346,12 @@ a { color: #8fd9ee; }
   </footer>
 </main>
 
-<img id="heightmapImage" src="sealevel/world-heightmap-noaa-etopo2022.png" width="1080" height="540" alt="" hidden>
+<img id="heightmapImage" src="sealevel/world-heightmap-noaa-etopo2022-bedrock.png" width="1080" height="540" alt="" hidden>
 <script>
 const WIDTH = 1080;
 const HEIGHT = 540;
-const MIN_ELEV = -9027;
-const MAX_ELEV = 9027;
+const MIN_ELEV = -10000;
+const MAX_ELEV = 10000;
 const LEVEL_ACTIONS = [
   { label: "-1000m", delta: -1000 },
   { label: "-100m", delta: -100 },
@@ -422,7 +422,11 @@ function decodeHeightmapImage(img) {
   const pixels = dataCtx.getImageData(0, 0, WIDTH, HEIGHT).data;
   const values = new Int16Array(WIDTH * HEIGHT);
   for (let i = 0, p = 0; i < values.length; i++, p += 4) {
-    values[i] = ((pixels[p] << 8) | pixels[p + 1]) - 32768;
+    const r = pixels[p];
+    const g = pixels[p + 1];
+    const b = pixels[p + 2];
+    const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07);
+    values[i] = u16 - 32768;
   }
   return values;
 }
@@ -780,14 +784,14 @@ function initializeHeightmap() {
     modeText.textContent = "Missing";
     waterText.textContent = "...";
     landText.textContent = "...";
-    cursorText.textContent = "Could not read sealevel/world-heightmap-noaa-etopo2022.png";
+    cursorText.textContent = "Could not read sealevel/world-heightmap-noaa-etopo2022-bedrock.png";
   }
 }
 
 heightmapImage.addEventListener("load", initializeHeightmap, { once: true });
 heightmapImage.addEventListener("error", () => {
   modeText.textContent = "Missing";
-  cursorText.textContent = "Could not load sealevel/world-heightmap-noaa-etopo2022.png";
+  cursorText.textContent = "Could not load sealevel/world-heightmap-noaa-etopo2022-bedrock.png";
 }, { once: true });
 
 if (heightmapImage.complete && heightmapImage.naturalWidth > 0) {
