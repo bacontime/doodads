@@ -1,0 +1,64 @@
+{
+  "generatedBy": "ChatGPT 5.5",
+  "png": "mars-heightmap-pds-mola-megdr-16ppd-areoid.png",
+  "width": 1080,
+  "height": 540,
+  "masks": {
+    "R": "1001111000000111",
+    "G": "0101111000111000",
+    "B": "0011111111000000"
+  },
+  "sourceBitsByChannel": {
+    "R": [
+      15,
+      12,
+      11,
+      10,
+      9,
+      2,
+      1,
+      0
+    ],
+    "G": [
+      14,
+      12,
+      11,
+      10,
+      9,
+      5,
+      4,
+      3
+    ],
+    "B": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+    ]
+  },
+  "encoding": "Signed meters are stored as unsigned 16-bit value = clamp(round(meters) + 32768, 0, 65535). Each 16-character RGB mask runs source bit 15 to bit 0; a 1 copies that source bit into the channel, packed left-to-right into channel bits 7 to 0.",
+  "decodeJavascript": "const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07); const meters = u16 - 32768;",
+  "outputRangeMeters": {
+    "min": -8157,
+    "max": 21095,
+    "mean": -720.905
+  },
+  "target": "Mars",
+  "source": "PDS Mars Global Surveyor MOLA MEGDR 16 ppd median topography",
+  "sourceUrl": "https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.img",
+  "labelUrl": "https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.lbl",
+  "localSourceData": "megt90n000eb.img",
+  "localSourceLabel": "megt90n000eb.lbl",
+  "sourceWidth": 5760,
+  "sourceHeight": 2880,
+  "sourceEncoding": "Signed big-endian 16-bit integer meters",
+  "outputProjection": "Simple cylindrical / equirectangular",
+  "zeroLevel": {
+    "definition": "0 m is the MOLA areoid datum from the source product"
+  },
+  "resampling": "Bilinear sample from 5760x2880 source into 1080x540, rotated to -180..180 longitude"
+}

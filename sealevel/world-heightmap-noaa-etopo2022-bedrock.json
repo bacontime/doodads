@@ -1,0 +1,61 @@
+{
+  "generatedBy": "ChatGPT 5.5",
+  "png": "world-heightmap-noaa-etopo2022-bedrock.png",
+  "width": 1080,
+  "height": 540,
+  "masks": {
+    "R": "1001111000000111",
+    "G": "0101111000111000",
+    "B": "0011111111000000"
+  },
+  "sourceBitsByChannel": {
+    "R": [
+      15,
+      12,
+      11,
+      10,
+      9,
+      2,
+      1,
+      0
+    ],
+    "G": [
+      14,
+      12,
+      11,
+      10,
+      9,
+      5,
+      4,
+      3
+    ],
+    "B": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+    ]
+  },
+  "encoding": "Signed meters are stored as unsigned 16-bit value = clamp(round(meters) + 32768, 0, 65535). Each 16-character RGB mask runs source bit 15 to bit 0; a 1 copies that source bit into the channel, packed left-to-right into channel bits 7 to 0.",
+  "decodeJavascript": "const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07); const meters = u16 - 32768;",
+  "outputRangeMeters": {
+    "min": -9328,
+    "max": 5795,
+    "mean": -2128.001
+  },
+  "target": "Earth",
+  "source": "NOAA ETOPO 2022 v1 60 arc-second bedrock elevation GeoTIFF",
+  "sourceUrl": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022/data/60s/60s_bed_elev_gtif/ETOPO_2022_v1_60s_N90W180_bed.tif",
+  "localSourceData": "world-heightmap-noaa-etopo2022-60s-bed-5min-int16le.dat",
+  "sourceWidth": 4320,
+  "sourceHeight": 2160,
+  "outputProjection": "Equirectangular",
+  "zeroLevel": {
+    "definition": "0 m is current Earth mean sea level in the source product"
+  },
+  "resampling": "Averaged 4x4 cells from the existing 4320x2160 int16 grid before RGB bit-mask encoding"
+}

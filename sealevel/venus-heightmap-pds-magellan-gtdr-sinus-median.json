@@ -1,0 +1,82 @@
+{
+  "generatedBy": "ChatGPT 5.5",
+  "png": "venus-heightmap-pds-magellan-gtdr-sinus-median.png",
+  "width": 1080,
+  "height": 540,
+  "masks": {
+    "R": "1001111000000111",
+    "G": "0101111000111000",
+    "B": "0011111111000000"
+  },
+  "sourceBitsByChannel": {
+    "R": [
+      15,
+      12,
+      11,
+      10,
+      9,
+      2,
+      1,
+      0
+    ],
+    "G": [
+      14,
+      12,
+      11,
+      10,
+      9,
+      5,
+      4,
+      3
+    ],
+    "B": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+    ]
+  },
+  "encoding": "Signed meters are stored as unsigned 16-bit value = clamp(round(meters) + 32768, 0, 65535). Each 16-character RGB mask runs source bit 15 to bit 0; a 1 copies that source bit into the channel, packed left-to-right into channel bits 7 to 0.",
+  "decodeJavascript": "const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07); const meters = u16 - 32768;",
+  "outputRangeMeters": {
+    "min": -3210,
+    "max": 10342,
+    "mean": 94.366
+  },
+  "target": "Venus",
+  "source": "PDS Magellan GXDR GTDR sinusoidal topography radius map",
+  "sourceUrl": "https://pds-geosciences.wustl.edu/mgn/urn-nasa-pds-magellan_gxdr/data/sinusoidal/gtdr_sinus.img",
+  "labelUrl": "https://pds-geosciences.wustl.edu/mgn/urn-nasa-pds-magellan_gxdr/data/sinusoidal/gtdr_sinus.xml",
+  "headerUrl": "https://pds-geosciences.wustl.edu/mgn/urn-nasa-pds-magellan_gxdr/data/sinusoidal/gtdr_sinus.hdr",
+  "localSourceData": "gtdr_sinus.img",
+  "localSourceHeader": "gtdr_sinus.hdr",
+  "localSourceLabel": "gtdr_sinus.xml",
+  "fallbackPolarAndNodataSource": "venus-magellan-topogrd.dat",
+  "sourceWidth": 8192,
+  "sourceHeight": 4096,
+  "sourceProjection": "Sinusoidal",
+  "sourceMetersPerPixel": 4641.0589,
+  "sourceValueOffsetMeters": 6039999,
+  "sourceEncoding": "Unsigned little-endian 16-bit; radius_meters = DN + 6039999",
+  "outputProjection": "Equirectangular",
+  "zeroLevel": {
+    "definition": "0 m is the area-weighted median radius of the reprojected output grid",
+    "medianDn": 11648,
+    "medianRadiusMeters": 6051647,
+    "medianHeightMetersRelativeTo6051kmSphere": 647
+  },
+  "sampledSourceRange": {
+    "minDn": 8438,
+    "maxDn": 21990,
+    "minRadiusMeters": 6048437,
+    "maxRadiusMeters": 6061989,
+    "meanRadiusMeters": 6051741.366
+  },
+  "nodataHandling": "GTDR DN=0 samples were treated as no-data. Bilinear sampling ignores zero-valued neighbors; fully missing samples are filled from the complete 1-degree Magellan TOPOGRD grid.",
+  "sourceHeader": "ENVI\ndescription = {GTDR mosaic }\nsamples = 8192\nlines = 4096\nbands = 1\nheader_offset = 0\nfile type = ENVI Standard\ndata type = 2\ninterleave = bsq\nbyte order = 0\nmap info = {Venus Sinusoidal,4097.0000,2049.0000,0.0000,0.0000,\n4641.0589,4641.0589,Venus custermerD,units=Meters}\nprojection info = {16,6051000.0,0.0,0.0,0.0,Venus custermerD,Venus Sinusoidal,units=Meters}\ncoordinate system string = {PROJCS[\"Venus Sinusoidal\",\nGEOGCS[\"GCS_Venus_Customer\",DATUM[\"Venus custermerD\",SPHEROID[\"S_Venus_custermer\",6051000,0.0]],\nPRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Sinusoidal\"],\nPARAMETER[\"False_Easting\",0.0],PARAMETER[\"False_Northing\",0.0],\nPARAMETER[\"Central_Meridian\",0.000],\nUNIT[\"Meter\",1.0]]}",
+  "sourceLabelTitle": "Magellen GXDR Sinusoidal topography (radius) map: gtdr_sinus"
+}

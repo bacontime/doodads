@@ -1,0 +1,82 @@
+{
+  "generatedBy": "ChatGPT 5.5",
+  "target": "Ceres",
+  "source": "PDS Dawn FC2 Ceres HAMO Digital Terrain Model adjusted to height above CERES18D geoid",
+  "dtmSourceUrl": "https://sbnarchive.psi.edu/pds3/dawn/fc/DWNCHSPG_2/DATA/CE_HAMO_G_00N_180E_EQU_DTM.IMG",
+  "dtmArchiveReadmeUrl": "https://sbnarchive.psi.edu/pds3/dawn/fc/DWNCHSPG_2/AAREADME.TXT",
+  "geoidSourceUrl": "https://sbnarchive.psi.edu/pds3/dawn/grav/DWNCGRS_2_v4/DATA/RSDMAP/JGDWN_CER18D_GEOID_0018.IMG",
+  "geoidLabelUrl": "https://sbnarchive.psi.edu/pds3/dawn/grav/DWNCGRS_2_v4/DATA/RSDMAP/JGDWN_CER18D_GEOID_0018.LBL",
+  "localGeoidData": "ceres-jgdwn-cer18d-geoid-0018.img",
+  "localGeoidLabel": "ceres-jgdwn-cer18d-geoid-0018.lbl",
+  "png": "ceres-heightmap-pds-dawn-fc2-hamo-spg-ceroid.png",
+  "width": 1080,
+  "height": 540,
+  "dtmSourceWidth": 21600,
+  "dtmSourceHeight": 10800,
+  "geoidSourceWidth": 360,
+  "geoidSourceHeight": 181,
+  "projection": "Simple cylindrical / equirectangular, output rotated to -180..180 longitude",
+  "zeroLevel": {
+    "definition": "0 m is the PDS/JPL CERES18D geoid/ceroid surface, approximated radially from the reference ellipsoid plus geoid height",
+    "geoidReferenceEllipsoidSemiMajorMeters": 482000,
+    "geoidReferenceEllipsoidSemiMinorMeters": 445900.128,
+    "geoidReferenceEllipsoidFlattening": 0.074896,
+    "dtmReferenceSphereRadiusMeters": 470000
+  },
+  "conversion": "shapeRadius = 470000 + dtmHeightMeters; ellipsoidRadius = radius of CERES18D reference oblate ellipsoid at planetocentric latitude; ceroidRadius = ellipsoidRadius + geoidHeightMeters; outputMeters = round(shapeRadius - ceroidRadius).",
+  "caveat": "The geoid height is treated as a radial offset from the ellipsoid at each planetocentric latitude; this is appropriate for this visualization but not a rigorous geodetic normal-height transformation.",
+  "masks": {
+    "R": "1001111000000111",
+    "G": "0101111000111000",
+    "B": "0011111111000000"
+  },
+  "sourceBitsByChannel": {
+    "R": [
+      15,
+      12,
+      11,
+      10,
+      9,
+      2,
+      1,
+      0
+    ],
+    "G": [
+      14,
+      12,
+      11,
+      10,
+      9,
+      5,
+      4,
+      3
+    ],
+    "B": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+    ]
+  },
+  "encoding": "Signed meters are stored as unsigned 16-bit value = clamp(round(meters) + 32768, 0, 65535). Each 16-character RGB mask runs source bit 15 to bit 0; a 1 copies that source bit into the channel, packed left-to-right into channel bits 7 to 0.",
+  "decodeJavascript": "const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07); const meters = u16 - 32768;",
+  "outputRangeMetersAboveCeroid": {
+    "min": -6905,
+    "max": 8183,
+    "mean": -67.117
+  },
+  "sampledDtmRangeMetersAbove470kmSphere": {
+    "min": -27842.75,
+    "max": 16990.75
+  },
+  "sampledGeoidRangeMetersAboveReferenceEllipsoid": {
+    "min": -1066.356,
+    "max": 1454.069
+  },
+  "geoidLabelSummary": "This file contains a digital map of the Ceres geoid derived from the JPL CERES18D spherical harmonic model of the Ceres gravity field. Each point is the Ceres geoid height in meters above a reference ellipsoid (semi-major-axis = 482.0 km, GM = 62.6273588067 km**3/s**2, flattening = 0.074896, and rotation rate = 0.000192340387006239 rad/s). The JGDWN_CER18D_GEOID_0018 is computed from the CERES18D solution (from degree 2 up to degree 18). The map is produced by Dawn Gravity Team (Alex Konopliv, Ryan Park, Sami Asmar) at JPL.",
+  "resampling": "Bilinear samples from the 21600x10800 DTM and 360x181 geoid at 1080x540 output pixel centers. DTM was read by HTTP byte ranges; geoid was downloaded locally."
+}

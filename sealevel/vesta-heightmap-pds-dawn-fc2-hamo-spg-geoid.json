@@ -1,0 +1,100 @@
+{
+  "generatedBy": "ChatGPT 5.5",
+  "png": "vesta-heightmap-pds-dawn-fc2-hamo-spg-geoid.png",
+  "width": 1080,
+  "height": 540,
+  "masks": {
+    "R": "1001111000000111",
+    "G": "0101111000111000",
+    "B": "0011111111000000"
+  },
+  "sourceBitsByChannel": {
+    "R": [
+      15,
+      12,
+      11,
+      10,
+      9,
+      2,
+      1,
+      0
+    ],
+    "G": [
+      14,
+      12,
+      11,
+      10,
+      9,
+      5,
+      4,
+      3
+    ],
+    "B": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+    ]
+  },
+  "encoding": "Signed meters are stored as unsigned 16-bit value = clamp(round(meters) + 32768, 0, 65535). Each 16-character RGB mask runs source bit 15 to bit 0; a 1 copies that source bit into the channel, packed left-to-right into channel bits 7 to 0.",
+  "decodeJavascript": "const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07); const meters = u16 - 32768;",
+  "representableRangeMeters": {
+    "min": -32768,
+    "max": 32767
+  },
+  "outputRangeMeters": {
+    "min": -20346,
+    "max": 18642,
+    "mean": 16.626
+  },
+  "clipping": {
+    "clampedLowPixels": 0,
+    "clampedHighPixels": 0,
+    "clampedTotalPixels": 0,
+    "clampedFraction": 0
+  },
+  "target": "Vesta",
+  "source": "PDS Dawn FC2 Vesta HAMO Digital Terrain Model adjusted to height above JPL VESTA20H geoid",
+  "dtmSourceUrl": "https://sbnarchive.psi.edu/pds3/dawn/fc/DWNVSPG_2/DATA/VE_HAMO_G_00N_330E_EQU_DTM.IMG",
+  "dtmProductDirectoryUrl": "https://sbnarchive.psi.edu/pds3/dawn/fc/DWNVSPG_2/DATA/",
+  "geoidSourceUrl": "https://sbnarchive.psi.edu/pds3/dawn/grav/DWNVGRS_2/DATA/RSDMAP/JGDWN_VES20H_GEOID_0020.IMG",
+  "geoidLabelUrl": "https://sbnarchive.psi.edu/pds3/dawn/grav/DWNVGRS_2/DATA/RSDMAP/JGDWN_VES20H_GEOID_0020.LBL",
+  "geoidProductDirectoryUrl": "https://sbnarchive.psi.edu/pds3/dawn/grav/DWNVGRS_2/DATA/RSDMAP/",
+  "localGeoidData": "vesta-jgdwn-ves20h-geoid-0020.img",
+  "localGeoidLabel": "vesta-jgdwn-ves20h-geoid-0020.lbl",
+  "dtmSourceWidth": 23040,
+  "dtmSourceHeight": 11521,
+  "geoidSourceWidth": 360,
+  "geoidSourceHeight": 181,
+  "projection": "Simple cylindrical / equirectangular, output -180..180 longitude",
+  "zeroLevel": {
+    "definition": "0 m is the PDS/JPL VESTA20H geoid surface, approximated radially from the reference ellipsoid plus geoid height",
+    "geoidReferenceEllipsoidSemiMajorMeters": 281000,
+    "geoidReferenceEllipsoidSemiMinorMeters": 226000.00010299997,
+    "geoidReferenceEllipsoidFlattening": 0.195729537,
+    "dtmReferenceSphereRadiusMeters": 255000
+  },
+  "conversion": "shapeRadius = 255000 + dtmHeightMeters; ellipsoidRadius = radius of VESTA20H reference oblate ellipsoid at planetocentric latitude; geoidRadius = ellipsoidRadius + geoidHeightMeters; outputMeters = round(shapeRadius - geoidRadius).",
+  "sampledDtmRangeMetersAbove255kmSphere": {
+    "min": -43029.333,
+    "max": 37926.333
+  },
+  "sampledGeoidRangeMetersAboveReferenceEllipsoid": {
+    "min": -9195.706,
+    "max": 6912.4
+  },
+  "geoidValidity": {
+    "sourceWarning": "The VESTA20H geoid label says the geoid is not valid for all points due to spherical-harmonic divergence and is roughly valid only between +/-60 degrees latitude.",
+    "validLatitudeLimitDegrees": 60,
+    "handlingOutsideValidBand": "For global toy-map continuity, geoid sampling outside +/-60 degrees latitude is latitude-clamped to the nearest valid boundary before subtracting from the shape radius.",
+    "polarGeoidClampedPixels": 194400,
+    "polarGeoidClampedFraction": 0.333333
+  },
+  "caveat": "This is suitable for visualization but not a rigorous geodetic normal-height transform. Vesta's polar regions should be treated cautiously because the source geoid itself is explicitly not valid there.",
+  "geoidLabelSummary": "This file contains a digital map of the Vesta geoid derived from the JPL VESTA20H spherical harmonic model of the Vesta gravity field. Each point is the Vesta geoid height in meters above a reference ellipsoid (semi-major-axis = 281.0 km, GM = 17.2882449693 km**3/s**2, flattening = 0.195729537, and rotation rate = 0.00032671051138233364 rad/s). The prime meridian is given by W=284.59521 degrees. ** IMPORTANT NOTE ** The JGDWN_VES20H_GEOID is computed from the VESTA20H solution (from degree 2 up to degree 20). Note that the geoid is *not valid* for all points on the surface due to divergence of the spherical harmonics. The valid region is roughly between +- 60 degrees latitude. The reference for this gravity field is Konopliv et al., The Vesta gravity field, spin pole and rotation, landmark positions, and ephemeris from the Dawn tracking and optical data, Icarus, 2013, http://dx.doi.org/10.1016/j.icarus.2013.09.005. [KONOPLIVETAL2014B]. The original published gravity field is in the Claudia coordinate system with the prime meridian location defined by the Claudia crater. To be consistent with IAU standards, this version of the VESTA20H gravity field has been rotated by 210 degrees to be similar to the Claudia double-prime coordinate system. The difference between the Claudia coordinate system and Claudia double-prime coordinate system is documented in DOCUMENT/VESTA_COORDINATES_131018.PDF. Note that because the pole and spin rate are jointly estimated with the gravity field, the coordinate system used in this map differs slightly from the official Claudia double-prime coordinate system. For details about the gravity coordinate frame, see DATA/SHADR/JGDWN_VES20H_SHA.LBL. The map is delivered as a Radio Science Digital Map (RSDMAP) product. Each pixel represents the geoid height on a simple cylindrical projection. Latitude and longitude are gridded and intersect one another at right angles. The map has 181 lines with 360 samples per line. For example, the first 8 bytes (PC_REAL) represent the first pixel at -180 degrees longitude and +90 degrees latitude. The last 8 bytes represent the last pixel at +179 degrees longitude and -90 degrees latitude. The map is produced by Dawn Gravity Team (Alex Konopliv, Ryan Park, Sami Asmar) at JPL.",
+  "resampling": "Bilinear samples from the 23040x11521 DTM and 360x181 geoid at 1080x540 output pixel centers. DTM was read by HTTP byte ranges; geoid was downloaded locally."
+}

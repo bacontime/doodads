@@ -7,6 +7,13 @@
 <meta name="generator" content="ChatGPT 5.5">
 <title>World Sea Level Viewer</title>
 <style>
+@font-face {
+  font-family: "Astromoony Sans";
+  src: url("sealevel/AstromoonySans.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
 :root {
   color-scheme: dark;
   --bg: #111318;
@@ -100,7 +107,7 @@ canvas {
 .canvas-wrap:hover .crosshair { opacity: 1; }
 .controls {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) 128px minmax(190px, auto);
+  grid-template-columns: minmax(220px, 1fr) 128px;
   gap: 12px;
   align-items: center;
   padding: 12px;
@@ -115,17 +122,10 @@ label {
   letter-spacing: 0.08em;
   margin-bottom: 7px;
 }
-.control-label {
-  display: block;
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 7px;
-}
 input[type="range"] {
   width: 100%;
   accent-color: var(--accent);
+  cursor: pointer;
 }
 input[type="number"] {
   width: 100%;
@@ -136,6 +136,34 @@ input[type="number"] {
   padding: 7px 9px;
   font: inherit;
   font-variant-numeric: tabular-nums;
+}
+select {
+  width: 100%;
+  min-height: 38px;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 7px 9px;
+  font: inherit;
+  cursor: pointer;
+}
+.body-select,
+.body-select option {
+  font-family: "Astromoony Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+select:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+input[type="number"]:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 .toggle-control {
   display: flex;
@@ -181,6 +209,8 @@ input[type="number"] {
 }
 .toggle-control:focus-within {
   border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .toggle-control input:checked + .switch {
   background: #1f8fac;
@@ -196,6 +226,10 @@ input[type="number"] {
   padding: 0 12px 12px;
   background: var(--panel);
 }
+.invert-control {
+  padding: 0 12px 12px;
+  background: var(--panel);
+}
 button {
   min-height: 34px;
   border: 1px solid var(--line);
@@ -206,9 +240,13 @@ button {
   font-size: 0.88rem;
   cursor: pointer;
 }
-button:hover, button:focus-visible {
+button:hover {
   border-color: var(--accent);
-  outline: none;
+}
+button:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .legend {
   display: grid;
@@ -216,10 +254,14 @@ button:hover, button:focus-visible {
   gap: 10px;
   margin-top: 12px;
 }
+.heightmap-block,
 .legend-block {
   border: 1px solid var(--line);
   background: var(--panel);
   padding: 10px;
+}
+.heightmap-block {
+  margin-top: 12px;
 }
 .ramp {
   height: 13px;
@@ -310,23 +352,34 @@ a { color: #8fd9ee; }
     </div>
     <div class="controls">
       <div>
-        <label for="levelRange">Adjusted sea level, meters relative to today's</label>
-        <input id="levelRange" type="range" min="-10000" max="10000" step="1" value="0" disabled>
+        <label for="levelRange">Adjusted sea level, meters</label>
+        <input id="levelRange" type="range" min="-10000" max="10000" step="10" value="0" disabled>
       </div>
       <div>
-        <label for="levelInput">Meters</label>
         <input id="levelInput" type="number" min="-10000" max="10000" step="1" value="0" disabled>
-      </div>
-      <div>
-        <span class="control-label">Heightmap</span>
-        <label class="toggle-control">
-          <input id="invertToggle" type="checkbox" disabled>
-          <span class="switch" aria-hidden="true"></span>
-          <span>Invert around 0 m</span>
-        </label>
       </div>
     </div>
     <div class="presets" id="presets" aria-label="Sea level adjustments"></div>
+    <div class="invert-control">
+      <label class="toggle-control">
+        <input id="invertToggle" type="checkbox" disabled>
+        <span class="switch" aria-hidden="true"></span>
+        <span>Invert around 0 m</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="heightmap-block" aria-label="Heightmap selection">
+    <label for="bodySelect">Body</label>
+    <select class="body-select" id="bodySelect">
+      <option value="mercury">&#x263f; Mercury</option>
+      <option value="venus">&#x2640; Venus</option>
+      <option value="earth" selected>&#x1f728; Earth</option>
+      <option value="moon">&#x263e; Moon</option>
+      <option value="mars">&#x2642; Mars</option>
+      <option value="ceres">&#x26b3; Ceres</option>
+      <option value="vesta">&#x26b6; Vesta</option>
+    </select>
   </section>
 
   <section class="legend" aria-label="Color legend">
@@ -341,7 +394,7 @@ a { color: #8fd9ee; }
   </section>
 
   <footer> 
-    Source data: NOAA National Centers for Environmental Information, <a href="https://www.ncei.noaa.gov/products/etopo-global-relief-model">ETOPO 2022 Global Relief Model</a> (bedrock elevation), <a href="https://doi.org/10.25921/fd45-gt74">doi:10.25921/fd45-gt74</a>. <br>
+    Source data: <span id="sourceAttribution"></span><br>
     Code written with assistance from ChatGPT 5.5.
   </footer>
 </main>
@@ -352,6 +405,66 @@ const WIDTH = 1080;
 const HEIGHT = 540;
 const MIN_ELEV = -10000;
 const MAX_ELEV = 10000;
+const DEFAULT_BODY_ID = "earth";
+const BODY_OPTIONS = [
+  {
+    id: "mercury",
+    name: "Mercury",
+    src: "sealevel/mercury-heightmap-pds-messenger-mdis-dem.png",
+    source: "PDS MESSENGER MDIS Digital Elevation Model global simple-cylindrical IMG",
+    sourceUrl: "https://planetarydata.jpl.nasa.gov/img/data/messenger/MESSDEM_1001/DEM/GLOBAL/IMG/MSGR_DEM_USG_SC_I_V02.IMG",
+    zeroLevel: "0 m is relative to the source 2439.4 km Mercury datum."
+  },
+  {
+    id: "venus",
+    name: "Venus",
+    src: "sealevel/venus-heightmap-pds-magellan-gtdr-sinus-median.png",
+    source: "PDS Magellan GXDR GTDR sinusoidal topography radius map",
+    sourceUrl: "https://pds-geosciences.wustl.edu/mgn/urn-nasa-pds-magellan_gxdr/data/sinusoidal/gtdr_sinus.img",
+    zeroLevel: "0 m is the area-weighted median radius of the reprojected output grid."
+  },
+  {
+    id: "earth",
+    name: "Earth",
+    src: "sealevel/world-heightmap-noaa-etopo2022-bedrock.png",
+    source: "NOAA ETOPO 2022 Global Relief Model (bedrock elevation)",
+    sourceUrl: "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+    extraLinks: [{ text: "doi:10.25921/fd45-gt74", href: "https://doi.org/10.25921/fd45-gt74" }],
+    zeroLevel: "0 m is current Earth mean sea level."
+  },
+  {
+    id: "moon",
+    name: "Moon",
+    src: "sealevel/moon-heightmap-pds-lro-lola-gdr-ldem4.png",
+    source: "PDS LRO LOLA GDR LDEM_4 global cylindrical shape map",
+    sourceUrl: "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/cylindrical/img/ldem_4.img",
+    zeroLevel: "0 m is relative to the source reference sphere radius."
+  },
+  {
+    id: "mars",
+    name: "Mars",
+    src: "sealevel/mars-heightmap-pds-mola-megdr-16ppd-areoid.png",
+    source: "PDS Mars Global Surveyor MOLA MEGDR 16 ppd median topography",
+    sourceUrl: "https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/megt90n000eb.img",
+    zeroLevel: "0 m is the MOLA areoid datum from the source product."
+  },
+  {
+    id: "ceres",
+    name: "Ceres",
+    src: "sealevel/ceres-heightmap-pds-dawn-fc2-hamo-spg-ceroid.png",
+    source: "PDS Dawn FC2 Ceres HAMO Digital Terrain Model adjusted to the CERES18D ceroid",
+    sourceUrl: "https://sbnarchive.psi.edu/pds3/dawn/fc/DWNCHSPG_2/DATA/CE_HAMO_G_00N_180E_EQU_DTM.IMG",
+    zeroLevel: "0 m is the PDS/JPL CERES18D geoid/ceroid surface."
+  },
+  {
+    id: "vesta",
+    name: "Vesta",
+    src: "sealevel/vesta-heightmap-pds-dawn-fc2-hamo-spg-geoid.png",
+    source: "PDS Dawn FC2 Vesta HAMO Digital Terrain Model adjusted to the VESTA20H geoid",
+    sourceUrl: "https://sbnarchive.psi.edu/pds3/dawn/fc/DWNVSPG_2/DATA/VE_HAMO_G_00N_330E_EQU_DTM.IMG",
+    zeroLevel: "0 m is the PDS/JPL VESTA20H geoid surface."
+  }
+];
 const LEVEL_ACTIONS = [
   { label: "-1000m", delta: -1000 },
   { label: "-100m", delta: -100 },
@@ -361,7 +474,6 @@ const LEVEL_ACTIONS = [
   { label: "+100m", delta: 100 },
   { label: "+1000m", delta: 1000 }
 ];
-const SLIDER_STEP = 10;
 const LIGHT_ANGLE = Math.atan2(0.8, 0.6);
 const LIGHT_INTENSITY = 1 / 1000;
 const LIGHT_BASE = 1.0;
@@ -379,6 +491,7 @@ const canvas = document.getElementById("map");
 const ctx = canvas.getContext("2d", { alpha: false });
 const image = ctx.createImageData(WIDTH, HEIGHT);
 const heightmapImage = document.getElementById("heightmapImage");
+const bodySelect = document.getElementById("bodySelect");
 const levelRange = document.getElementById("levelRange");
 const levelInput = document.getElementById("levelInput");
 const invertToggle = document.getElementById("invertToggle");
@@ -392,6 +505,8 @@ const waterRamp = document.querySelector(".ramp.water");
 const landRamp = document.querySelector(".ramp.land");
 const waterScaleTicks = document.getElementById("waterScaleTicks");
 const landScaleTicks = document.getElementById("landScaleTicks");
+const sourceAttribution = document.getElementById("sourceAttribution");
+let currentBody = BODY_OPTIONS.find((body) => body.id === DEFAULT_BODY_ID) || BODY_OPTIONS[0];
 let currentSea = 0;
 let isInverted = false;
 let elevations = null;
@@ -409,6 +524,32 @@ let pendingSea = 0;
 let renderFrame = 0;
 
 initializeImageAlpha();
+updateSourceAttribution();
+
+function bodyById(id) {
+  return BODY_OPTIONS.find((body) => body.id === id);
+}
+
+function updateSourceAttribution() {
+  if (bodySelect.value !== currentBody.id) bodySelect.value = currentBody.id;
+  sourceAttribution.replaceChildren();
+  const sourceLink = document.createElement("a");
+  sourceLink.href = currentBody.sourceUrl;
+  sourceLink.textContent = currentBody.source;
+  sourceAttribution.append(sourceLink);
+
+  if (currentBody.extraLinks) {
+    for (const extraLink of currentBody.extraLinks) {
+      sourceAttribution.append(" ");
+      const link = document.createElement("a");
+      link.href = extraLink.href;
+      link.textContent = extraLink.text;
+      sourceAttribution.append(link);
+    }
+  }
+
+  sourceAttribution.append(`. ${currentBody.zeroLevel}`);
+}
 
 function decodeHeightmapImage(img) {
   if (img.naturalWidth !== WIDTH || img.naturalHeight !== HEIGHT) {
@@ -700,15 +841,31 @@ function setSeaLevel(raw, immediate = false) {
   else scheduleRender(sea);
 }
 
-function setSeaLevelFromSlider(raw) {
-  const parsed = Number(raw);
-  const stepped = Number.isFinite(parsed) ? Math.round(parsed / SLIDER_STEP) * SLIDER_STEP : 0;
-  setSeaLevel(stepped);
-}
-
 function setInverted(enabled) {
   isInverted = enabled;
   scheduleRender(currentSea);
+}
+
+function setBody(id) {
+  const nextBody = bodyById(id);
+  if (!nextBody || nextBody === currentBody) return;
+
+  currentBody = nextBody;
+  elevations = null;
+  invertedElevations = null;
+  shade = null;
+  invertedShade = null;
+  waterCoverByLevel = null;
+  invertedWaterCoverByLevel = null;
+  currentSea = 0;
+  pendingSea = 0;
+  updateSourceAttribution();
+  setControlsEnabled(false);
+  modeText.textContent = "Loading";
+  waterText.textContent = "...";
+  landText.textContent = "...";
+  cursorText.textContent = `Loading ${currentBody.name}...`;
+  heightmapImage.src = currentBody.src;
 }
 
 function scheduleRender(sea) {
@@ -746,11 +903,12 @@ for (const action of LEVEL_ACTIONS) {
   presets.appendChild(button);
 }
 
-levelRange.addEventListener("input", () => setSeaLevelFromSlider(levelRange.value));
+levelRange.addEventListener("input", () => setSeaLevel(levelRange.value));
 levelInput.addEventListener("change", () => setSeaLevel(levelInput.value));
 levelInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") setSeaLevel(levelInput.value);
 });
+bodySelect.addEventListener("change", () => setBody(bodySelect.value));
 invertToggle.addEventListener("change", () => setInverted(invertToggle.checked));
 
 canvas.addEventListener("mousemove", (event) => {
@@ -779,20 +937,23 @@ function initializeHeightmap() {
     prepareDerivedData();
     setControlsEnabled(true);
     setSeaLevel(0, true);
+    cursorText.textContent = "Move over map";
   } catch (error) {
     console.error(error);
     modeText.textContent = "Missing";
     waterText.textContent = "...";
     landText.textContent = "...";
-    cursorText.textContent = "Could not read sealevel/world-heightmap-noaa-etopo2022-bedrock.png";
+    cursorText.textContent = `Could not read ${currentBody.src}`;
   }
 }
 
-heightmapImage.addEventListener("load", initializeHeightmap, { once: true });
+heightmapImage.addEventListener("load", initializeHeightmap);
 heightmapImage.addEventListener("error", () => {
   modeText.textContent = "Missing";
-  cursorText.textContent = "Could not load sealevel/world-heightmap-noaa-etopo2022-bedrock.png";
-}, { once: true });
+  waterText.textContent = "...";
+  landText.textContent = "...";
+  cursorText.textContent = `Could not load ${currentBody.src}`;
+});
 
 if (heightmapImage.complete && heightmapImage.naturalWidth > 0) {
   initializeHeightmap();

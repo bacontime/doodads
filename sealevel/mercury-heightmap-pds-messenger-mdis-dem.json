@@ -1,0 +1,75 @@
+{
+  "generatedBy": "ChatGPT 5.5",
+  "png": "mercury-heightmap-pds-messenger-mdis-dem.png",
+  "width": 1080,
+  "height": 540,
+  "masks": {
+    "R": "1001111000000111",
+    "G": "0101111000111000",
+    "B": "0011111111000000"
+  },
+  "sourceBitsByChannel": {
+    "R": [
+      15,
+      12,
+      11,
+      10,
+      9,
+      2,
+      1,
+      0
+    ],
+    "G": [
+      14,
+      12,
+      11,
+      10,
+      9,
+      5,
+      4,
+      3
+    ],
+    "B": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6
+    ]
+  },
+  "encoding": "Signed meters are stored as unsigned 16-bit value = clamp(round(meters) + 32768, 0, 65535). Each 16-character RGB mask runs source bit 15 to bit 0; a 1 copies that source bit into the channel, packed left-to-right into channel bits 7 to 0.",
+  "decodeJavascript": "const u16 = ((r & 0x80) << 8) | ((g & 0x80) << 7) | ((b & 0x80) << 6) | ((r & 0x78) << 6) | ((b & 0x07) << 6) | ((g & 0x07) << 3) | (r & 0x07); const meters = u16 - 32768;",
+  "representableRangeMeters": {
+    "min": -32768,
+    "max": 32767
+  },
+  "outputRangeMeters": {
+    "min": -5339,
+    "max": 4401,
+    "mean": -238.792
+  },
+  "clipping": {
+    "clampedLowPixels": 0,
+    "clampedHighPixels": 0,
+    "clampedTotalPixels": 0,
+    "clampedFraction": 0
+  },
+  "target": "Mercury",
+  "source": "PDS MESSENGER MDIS Digital Elevation Model global simple-cylindrical IMG",
+  "sourceUrl": "https://planetarydata.jpl.nasa.gov/img/data/messenger/MESSDEM_1001/DEM/GLOBAL/IMG/MSGR_DEM_USG_SC_I_V02.IMG",
+  "labelUrl": "https://planetarydata.jpl.nasa.gov/img/data/messenger/MESSDEM_1001/DEM/GLOBAL/IMG/MSGR_DEM_USG_SC_I_V02.LBL",
+  "productDirectoryUrl": "https://planetarydata.jpl.nasa.gov/img/data/messenger/MESSDEM_1001/DEM/GLOBAL/IMG/",
+  "sourceWidth": 23040,
+  "sourceHeight": 11520,
+  "sourceProjection": "Simple cylindrical / equirectangular",
+  "outputProjection": "Simple cylindrical / equirectangular, -180..180 longitude",
+  "sourceEncoding": "Detached-label PDS3 IMG; signed little-endian 16-bit integer DN; meters = DN * 0.5; missing constant -32768",
+  "zeroLevel": {
+    "definition": "0 m is relative to the source 2439.4 km Mercury datum",
+    "referenceRadiusMeters": 2439400
+  },
+  "resampling": "Bilinear samples from the 23040x11520 source DEM at 1080x540 output pixel centers using HTTP byte-range row reads."
+}
